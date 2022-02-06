@@ -22,5 +22,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "dependencies": {
+    "ts-toolbelt": "9.6.0"
   }
 }
