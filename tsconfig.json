@@ -3,6 +3,7 @@
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
     "module": "ESNext",
+    "moduleResolution": "Node",
     "strict": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
