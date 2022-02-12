@@ -22,6 +22,7 @@
   },
   "scripts": {
     "test": "bash scripts/test.sh",
+    "test:types": "bash scripts/test-types.sh",
     "lint": "bash scripts/lint.sh",
     "format": "bash scripts/format.sh"
   },
