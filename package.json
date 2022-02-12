@@ -21,7 +21,9 @@
     "typescript": "4.5.5"
   },
   "scripts": {
-    "test": "jest"
+    "test": "bash scripts/test.sh",
+    "lint": "bash scripts/lint.sh",
+    "format": "bash scripts/format.sh"
   },
   "dependencies": {
     "ts-toolbelt": "9.6.0"
