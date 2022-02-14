@@ -36,7 +36,48 @@
   "rules": {
     "jsdoc/require-param-type": 0,
     "jsdoc/require-returns-type": 0,
-    "tsdoc/syntax": 1
+    "tsdoc/syntax": 1,
+    "import/no-commonjs": 2,
+    "import/no-amd": 2,
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          [
+            "parent",
+            "sibling"
+          ],
+          "index",
+          "object",
+          "type"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "@lib/**",
+            "group": "internal",
+            "position": "before"
+          }
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "warnOnUnassignedImports": true
+      }
+    ],
+    "@typescript-eslint/adjacent-overload-signatures": 2,
+    "@typescript-eslint/member-ordering": [
+      1,
+      {
+        "default": {
+          "order": "alphabetically-case-insensitive"
+        }
+      }
+    ]
   },
   "settings": {
     "jsdoc": {
@@ -45,5 +86,28 @@
     "jest": {
       "version": 27
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "./src/**/fluent.ts"
+      ],
+      "rules": {
+        "functional/no-class": 0,
+        "functional/functional-parameters": 0,
+        "functional/no-this-expression": 0,
+        "functional/no-expression-statement": 0,
+        "functional/no-conditional-statement": 0,
+        "@typescript-eslint/prefer-readonly-parameter-types": 0
+      }
+    },
+    {
+      "files": [
+        "./src/__tests__/**/*.ts"
+      ],
+      "extends": [
+        "plugin:functional/off"
+      ]
+    }
+  ]
 }
