@@ -19,12 +19,14 @@
   ],
   "plugins": [
     "@typescript-eslint",
+    "eslint-plugin-tsdoc",
     "jest",
     "jest-formatting"
   ],
   "rules": {
     "jsdoc/require-param-type": 0,
-    "jsdoc/require-returns-type": 0
+    "jsdoc/require-returns-type": 0,
+    "tsdoc/syntax": 1
   },
   "settings": {
     "jsdoc": {
