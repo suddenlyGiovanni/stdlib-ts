@@ -31,7 +31,7 @@ export interface Endomorphism<A> {
 
 /** Models (...args: A) => B */
 export interface FunctionN<Args extends ReadonlyArray<unknown>, B> {
-  (...args: [...Args]): B
+  (...args: readonly [...Args]): B
 }
 
 /** Will raise if called */
