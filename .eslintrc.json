@@ -6,11 +6,20 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
   "extends": [
     "eslint:recommended",
+    "plugin:eslint-comments/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:functional/external-recommended",
+    "plugin:functional/recommended",
+    "plugin:functional/stylistic",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "plugin:jsdoc/recommended",
     "plugin:jest/recommended",
     "plugin:jest/style",
@@ -19,12 +28,15 @@
   ],
   "plugins": [
     "@typescript-eslint",
+    "functional",
+    "eslint-plugin-tsdoc",
     "jest",
     "jest-formatting"
   ],
   "rules": {
     "jsdoc/require-param-type": 0,
-    "jsdoc/require-returns-type": 0
+    "jsdoc/require-returns-type": 0,
+    "tsdoc/syntax": 1
   },
   "settings": {
     "jsdoc": {
