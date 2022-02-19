@@ -6,14 +6,13 @@ specifiers:
   '@typescript-eslint/eslint-plugin': 5.12.0
   '@typescript-eslint/parser': 5.12.0
   eslint: 8.9.0
-  eslint-config-prettier: 8.3.0
+  eslint-config-prettier: 8.4.0
   eslint-plugin-eslint-comments: 3.2.0
   eslint-plugin-functional: 4.2.0
   eslint-plugin-import: 2.25.4
   eslint-plugin-jest: 26.1.1
   eslint-plugin-jest-formatting: 3.1.0
   eslint-plugin-jsdoc: 37.9.1
-  eslint-plugin-tsdoc: 0.2.14
   jest: 27.5.1
   prettier: 2.5.1
   prettier-plugin-jsdoc: 0.3.30
@@ -31,14 +30,13 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.12.0_10a7911da15508e408de6857b15936c4
   '@typescript-eslint/parser': 5.12.0_eslint@8.9.0+typescript@4.6.1-rc
   eslint: 8.9.0
-  eslint-config-prettier: 8.3.0_eslint@8.9.0
+  eslint-config-prettier: 8.4.0_eslint@8.9.0
   eslint-plugin-eslint-comments: 3.2.0_eslint@8.9.0
   eslint-plugin-functional: 4.2.0_d93c63ddfa1bcbcd397a166496739e6b
   eslint-plugin-import: 2.25.4_eslint@8.9.0
   eslint-plugin-jest: 26.1.1_e163cf3559d948a65af73d163e626ab3
   eslint-plugin-jest-formatting: 3.1.0_eslint@8.9.0
   eslint-plugin-jsdoc: 37.9.1_eslint@8.9.0
-  eslint-plugin-tsdoc: 0.2.14
   jest: 27.5.1
   prettier: 2.5.1
   prettier-plugin-jsdoc: 0.3.30_prettier@2.5.1
@@ -652,19 +650,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.0.4
       '@jridgewell/sourcemap-codec': 1.4.10
-    dev: true
-
-  /@microsoft/tsdoc-config/0.15.2:
-    resolution: {integrity: sha512-mK19b2wJHSdNf8znXSMYVShAHktVr/ib0Ck2FA3lsVBSEhSI/TfXT7DJQkAYgcztTuwazGcg58ZjYdk0hTCVrA==}
-    dependencies:
-      '@microsoft/tsdoc': 0.13.2
-      ajv: 6.12.6
-      jju: 1.4.0
-      resolve: 1.19.0
-    dev: true
-
-  /@microsoft/tsdoc/0.13.2:
-    resolution: {integrity: sha512-WrHvO8PDL8wd8T2+zBGKrMwVL5IyzR3ryWUsl0PXgEV0QHup4mTLi0QcATefGI6Gx9Anu7vthPyyyLpY0EpiQg==}
     dev: true
 
   /@nodelib/fs.scandir/2.1.5:
@@ -1605,8 +1590,8 @@ packages:
       source-map: 0.6.1
     dev: true
 
-  /eslint-config-prettier/8.3.0_eslint@8.9.0:
-    resolution: {integrity: sha512-BgZuLUSeKzvlL/VUjx/Yb787VQ26RU3gGjA3iiFvdsp/2bMfVIWUVP7tjxtjS0e+HP409cPlPvNkQloz8C91ew==}
+  /eslint-config-prettier/8.4.0_eslint@8.9.0:
+    resolution: {integrity: sha512-CFotdUcMY18nGRo5KGsnNxpznzhkopOcOo0InID+sgQssPrzjvsyKZPvOgymTFeHrFuC3Tzdf2YndhXtULK9Iw==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -1733,13 +1718,6 @@ packages:
       spdx-expression-parse: 3.0.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /eslint-plugin-tsdoc/0.2.14:
-    resolution: {integrity: sha512-fJ3fnZRsdIoBZgzkQjv8vAj6NeeOoFkTfgosj6mKsFjX70QV256sA/wq+y/R2+OL4L8E79VVaVWrPeZnKNe8Ng==}
-    dependencies:
-      '@microsoft/tsdoc': 0.13.2
-      '@microsoft/tsdoc-config': 0.15.2
     dev: true
 
   /eslint-scope/5.1.1:
@@ -2891,10 +2869,6 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jju/1.4.0:
-    resolution: {integrity: sha1-o6vicYryQaKykE+EpiWXDzia4yo=}
-    dev: true
-
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
     dev: true
@@ -3469,13 +3443,6 @@ packages:
   /resolve.exports/1.1.0:
     resolution: {integrity: sha512-J1l+Zxxp4XK3LUDZ9m60LRJF/mAe4z6a4xyabPHk7pvK5t35dACV32iIjJDFeWZFfZlO29w6SZ67knR0tHzJtQ==}
     engines: {node: '>=10'}
-    dev: true
-
-  /resolve/1.19.0:
-    resolution: {integrity: sha512-rArEXAgsBG4UgRGcynxWIWKFvh/XZCcS8UJdHhwy91zwAvCZIbcs+vAbflgBnNjYMs/i/i+/Ux6IZhML1yPvxg==}
-    dependencies:
-      is-core-module: 2.8.1
-      path-parse: 1.0.7
     dev: true
 
   /resolve/1.22.0:
