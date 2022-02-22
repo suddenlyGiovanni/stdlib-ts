@@ -17,17 +17,7 @@ import * as F from '../fuction'
 import * as T from './model'
 
 export default abstract class AbstractOption<A = unknown> {
-  abstract readonly _tag: 'None' | 'Some'
-
-  /**
-   * String value that is used in the creation of the default string description
-   * of an object.
-   *
-   * Called by the built-in method Object.prototype.toString.
-   */
-  static get [Symbol.toStringTag](): string {
-    return 'Option'
-  }
+  abstract readonly _tag: T.Option<unknown>['_tag']
 
   /**
    * Returns a singleton iterator returning the Option's value if it is
@@ -96,6 +86,31 @@ export default abstract class AbstractOption<A = unknown> {
    */
   static apply<T>(x: T): Option<T> {
     return x != null ? new Some(x) : None.getInstance()
+  }
+
+  /**
+   * Indicates whether two Options are "equal to" oneanoter.
+   *
+   * @example
+   *   assert.strictEqual(_.equals(_.none, _.none), true)
+   *   assert.strictEqual(_.equals(_.none, _.some(1)), false)
+   *   assert.strictEqual(_.equals(_.some(1), _.none), false)
+   *   assert.strictEqual(_.equals(_.some(1), _.some(2)), false)
+   *   assert.strictEqual(_.equals(_.some(1), _.some(1)), true)
+   *
+   * @param x - Option a.
+   * @param y - Option b.
+   * @returns `true` If this object is the same as the obj argument; `false` otherwise.
+   */
+  static equals<A>(x: Option<A>, y: Option<A>): boolean {
+    return (
+      x === y ||
+      (AbstractOption.isNone(x)
+        ? AbstractOption.isNone(y)
+        : AbstractOption.isNone(y)
+        ? false
+        : x.value === y.value)
+    )
   }
 
   /**
@@ -906,10 +921,9 @@ export default abstract class AbstractOption<A = unknown> {
  * @internal
  */
 class None extends AbstractOption implements T.None {
-  readonly _tag = 'None' as const
-
   // eslint-disable-next-line functional/prefer-readonly-type
   static #instance: None
+  readonly _tag = 'None' as const
 
   get isDefined(): boolean {
     return false

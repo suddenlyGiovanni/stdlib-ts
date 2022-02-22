@@ -1,9 +1,22 @@
 import { describe, expect, it, jest, test } from '@jest/globals'
 
 import * as F from '../fuction'
-import _, { type Option } from '../option/fluent'
+/**
+ * @privateRemarks
+ *   `_` import is a Scala convention where we want to import all the functions
+ *   and methods form a given module to the current scope.
+ */
+import _ from '../option/fluent'
+
+import type { Option } from '../option/fluent'
 
 class Utils {
+  static readonly number = 10 as const
+
+  static readonly object = { foo: { bar: ['baz'] } } as const
+
+  static readonly string = F.literal('foo')
+
   static readonly aFunctionThatDoesntThrow: F.Lazy<number> = () => 1
 
   static readonly aFunctionThatThrows: F.Lazy<never> = () => {
@@ -20,12 +33,6 @@ class Utils {
     readonly [A: number],
     string
   > = (number) => number.toString()
-
-  static readonly number = 10 as const
-
-  static readonly object = { foo: { bar: ['baz'] } } as const
-
-  static readonly string = F.literal('foo')
 }
 
 describe('Option', () => {
@@ -455,5 +462,35 @@ describe('Option', () => {
 
   test('toStringTag', () => {
     expect(_[Symbol.toStringTag]).toBe('Option')
+  })
+
+  test('equals', () => {
+    const maybe1 = _.of(1)
+    // check with strict equality (referential identity)
+    expect(_.equals(_.none, _.none)).toBe(true)
+    expect(_.none.equals(_.none)).toBe(true)
+
+    expect(_.equals(maybe1, maybe1)).toBe(true)
+    expect(maybe1.equals(maybe1)).toBe(true)
+
+    // check for behaviour for correctness of the `true` branch
+    expect(_.equals(_.some(1), _.some(1))).toBe(true)
+    expect(_.some(1).equals(_.some(1))).toBe(true)
+
+    expect(_.equals(maybe1, _.some(1))).toBe(true)
+    expect(maybe1.equals(_.some(1))).toBe(true)
+
+    expect(_.equals(_.some(1), maybe1)).toBe(true)
+    expect(_.some(1).equals(maybe1)).toBe(true)
+
+    // check for behaviour for correctness of the `false` branch
+    expect(_.equals(_.none, _.some(1))).toBe(false)
+    expect(_.none.equals(_.some(1))).toBe(false)
+
+    expect(_.equals(_.some(1), _.none)).toBe(false)
+    expect(_.some(1).equals(_.none)).toBe(false)
+
+    expect(_.equals(maybe1, _.some(2))).toBe(false)
+    expect(maybe1.equals(_.some(2))).toBe(false)
   })
 })
