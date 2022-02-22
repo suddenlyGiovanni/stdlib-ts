@@ -1,14 +1,16 @@
 /**
  * `type Option<A> = None | Some<A>`
  *
- * `Option<A>` is a container for an optional value of type `A`. If the value of
- * type `A` is present, the `Option<A>` is an instance of `Some<A>`, containing
- * the present value of type `A`. If the value is absent, the `Option<A>` is an
- * instance of `None`.
+ * @remarks
+ *   `Option<A>` is a container for an optional value of type `A`. If the value of
+ *   type `A` is present, the `Option<A>` is an instance of `Some<A>`,
+ *   containing the present value of type `A`. If the value is absent, the
+ *   `Option<A>` is an instance of `None`.
  *
- * An option could be looked at as a collection or foldable structure with
- * either one or zero elements. Another way to look at `Option` is: it
- * represents the effect of a possibly failing computation.
+ *   An option could be looked at as a collection or foldable structure with
+ *   either one or zero elements. Another way to look at `Option` is: it
+ *   represents the effect of a possibly failing computation.
+ * @packageDocumentation
  */
 
 import * as F from '../fuction'
@@ -43,14 +45,21 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @category Constructors
    */
   static get empty(): None {
-    return new None()
+    return None.getInstance()
   }
 
-  /** Constructs `None` */
+  /**
+   * Constructs `None`
+   *
+   * @privateRemarks
+   *   We use a getter to stream-line the api
+   * @category Constructors
+   */
   static get none(): None {
-    return new None()
+    return None.getInstance()
   }
 
   /**
@@ -77,6 +86,7 @@ export default abstract class AbstractOption<A = unknown> {
    * An Option factory which creates Some(x) if the argument is not null, and
    * None if it is null.
    *
+   * @category Constructors
    * @param x – the value
    * @returns Some(value) if value != null, None if value == null
    *
@@ -85,13 +95,14 @@ export default abstract class AbstractOption<A = unknown> {
    *   TODO: a better static constructor could be `from` or `of` instead
    */
   static apply<T>(x: T): Option<T> {
-    return x != null ? new Some(x) : new None()
+    return x != null ? new Some(x) : None.getInstance()
   }
 
   /**
    * Constructs a new `Option` from a nullable type. If the value is `null` or
    * `undefined`, returns `None`, otherwise returns the value wrapped in a `Some`
    *
+   * @category Constructors
    * @example
    *   assert.deepStrictEqual(_.fromNullable(undefined), new None())
    *   assert.deepStrictEqual(_.fromNullable(null), new None())
@@ -100,14 +111,13 @@ export default abstract class AbstractOption<A = unknown> {
    * @param a - An nullable value
    */
   static fromNullable<A>(a: A): Option<NonNullable<A>> {
-    return a == null
-      ? new None() //
-      : new Some(a as NonNullable<A>)
+    return a == null ? None.getInstance() : new Some(a as NonNullable<A>)
   }
 
   /**
    * Returns a smart constructor based on the given predicate
    *
+   * @category Constructors
    * @example
    *   const getOption = Option.fromPredicate((n: number) => n >= 0)
    *
@@ -121,7 +131,7 @@ export default abstract class AbstractOption<A = unknown> {
   static fromPredicate<A>(predicate: F.Predicate<A>): (a: A) => Option<A>
 
   static fromPredicate<A>(predicate: F.Predicate<A>): (a: A) => Option<A> {
-    return (a) => (predicate(a) ? new Some(a) : new None())
+    return (a) => (predicate(a) ? new Some(a) : None.getInstance())
   }
 
   /**
@@ -212,7 +222,7 @@ export default abstract class AbstractOption<A = unknown> {
     try {
       return new Some(f())
     } catch (e: unknown) {
-      return new None()
+      return None.getInstance()
     }
   }
 
@@ -236,7 +246,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @param cond - A boolean condition
    */
   static when<A>(cond: boolean): (a: F.Lazy<A>) => Option<A> {
-    return (a) => (cond ? new Some(a()) : new None())
+    return (a) => (cond ? new Some(a()) : None.getInstance())
   }
 
   /**
@@ -246,9 +256,9 @@ export default abstract class AbstractOption<A = unknown> {
    */
   ap<A, B>(this: Option<A>, that: Option<(a: A) => B>): Option<B> {
     return that.isNone()
-      ? new None()
+      ? None.getInstance()
       : this.isNone()
-      ? new None()
+      ? None.getInstance()
       : new Some(that.value(this.value))
   }
 
@@ -316,10 +326,10 @@ export default abstract class AbstractOption<A = unknown> {
    */
   filter<A>(this: Option<A>, predicate: F.Predicate<A>) {
     return this.isNone()
-      ? new None()
+      ? None.getInstance()
       : predicate(this.value)
       ? this
-      : new None()
+      : None.getInstance()
   }
 
   /**
@@ -340,7 +350,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @param predicate – the predicate used for testing.
    */
   filterNot<A>(this: Option<A>, predicate: F.Predicate<A>): Option<A> {
-    return this.isSome() && !predicate(this.value) ? this : new None()
+    return this.isSome() && !predicate(this.value) ? this : None.getInstance()
   }
 
   /**
@@ -355,7 +365,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @see also: forEach chain
    */
   flatMap<A, B>(this: Option<A>, f: (a: A) => Option<B>): Option<B> {
-    return this.isNone() ? new None() : f(this.value)
+    return this.isNone() ? None.getInstance() : f(this.value)
   }
 
   /**
@@ -504,7 +514,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @see also: forEach
    */
   map<A, B>(this: Option<A>, f: (a: A) => B): Option<B> {
-    return this.isNone() ? new None() : new Some<B>(f(this.value))
+    return this.isNone() ? None.getInstance() : new Some<B>(f(this.value))
   }
 
   /**
@@ -554,7 +564,7 @@ export default abstract class AbstractOption<A = unknown> {
     f: (a: _A) => B | null | undefined
   ): Option<B> {
     return this.isNone()
-      ? new None() //
+      ? None.getInstance()
       : AbstractOption.fromNullable(f(this.value))
   }
 
@@ -811,7 +821,7 @@ export default abstract class AbstractOption<A = unknown> {
     this: Option<A>
   ): readonly [a1: Option<A1>, a2: Option<A2>] {
     if (this.isNone()) {
-      return F.tuple(new None(), new None())
+      return F.tuple(None.getInstance(), None.getInstance())
     } else {
       const [a1, a2] = this.value
       return F.tuple(new Some(a1), new Some(a2))
@@ -843,7 +853,7 @@ export default abstract class AbstractOption<A = unknown> {
     this: Option<A>
   ): readonly [Option<A1>, Option<A2>, Option<A3>] {
     if (this.isNone()) {
-      return [new None(), new None(), new None()]
+      return [None.getInstance(), None.getInstance(), None.getInstance()]
     } else {
       const [a1, a2, a3] = this.value
       return [new Some(a1), new Some(a2), new Some(a3)] as const
@@ -898,6 +908,9 @@ export default abstract class AbstractOption<A = unknown> {
 class None extends AbstractOption implements T.None {
   readonly _tag = 'None' as const
 
+  // eslint-disable-next-line functional/prefer-readonly-type
+  static #instance: None
+
   get isDefined(): boolean {
     return false
   }
@@ -910,9 +923,17 @@ class None extends AbstractOption implements T.None {
     return this._tag
   }
 
-  constructor() {
+  private constructor() {
     super()
     Object.freeze(this)
+  }
+
+  public static getInstance(): None {
+    if (!None.#instance) {
+      // eslint-disable-next-line functional/immutable-data
+      None.#instance = new None()
+    }
+    return None.#instance
   }
 }
 
