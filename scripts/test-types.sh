@@ -1,8 +1,3 @@
 #! /bin/bash
 
-pnpm exec tsc \
-  --noEmit \
-  --noErrorTruncation true \
-  --pretty true \
-  --diagnostics \
-  $1
+pnpm exec tsd $1
