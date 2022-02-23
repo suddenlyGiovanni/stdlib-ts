@@ -14,11 +14,38 @@
  */
 
 import * as F from '../fuction'
-import * as T from './model'
+import * as P from './pipable'
 
+import type * as T from './model'
+
+/**
+ * @beta
+ * @public
+ */
 export default abstract class AbstractOption<A = unknown> {
-  abstract readonly _tag: T.Option<unknown>['_tag']
+  /**
+   * Returns `true` if the predicate is satisfied by the wrapped value
+   *
+   * @beta
+   * @see {P.exists}
+   */
+  static readonly exists = P.exists
 
+  /**
+   * Returns `true` if the option is `None`, `false` otherwise.
+   *
+   * @beta
+   * @see {P.isNone}
+   */
+  static readonly isNone = P.isNone
+
+  /**
+   * Returns `true` if the option is an instance of `Some`, `false` otherwise.
+   *
+   * @beta
+   * @see {P.isSome}
+   */
+  static readonly isSome = P.isSome
   /**
    * Returns a singleton iterator returning the Option's value if it is
    * nonempty, or an empty iterator if the option is empty.
@@ -28,6 +55,17 @@ export default abstract class AbstractOption<A = unknown> {
    */
 
   // abstract iterator: Iterator<A> // TODO: provide implementation
+  abstract readonly _tag: T.Option<unknown>['_tag']
+
+  /**
+   * String value that is used in the creation of the default string description
+   * of an object.
+   *
+   * Called by the built-in method Object.prototype.toString.
+   */
+  static get [Symbol.toStringTag](): string {
+    return 'Option'
+  }
 
   /**
    * An Option factory which returns None in a manner consistent with the
@@ -172,33 +210,6 @@ export default abstract class AbstractOption<A = unknown> {
     return (a: A): a is B => AbstractOption.isSome(getOption(a))
   }
 
-  /**
-   * Returns `true` if the option is `None`, `false` otherwise.
-   *
-   * @example
-   *   assert.strictEqual(O.isNone(O.Some(1)), false)
-   *   assert.strictEqual(O.isNone(O.None()), true)
-   *
-   * @param fa - An Option instance of type unknown
-   * @returns `true` if the option is `None`, `false` otherwise
-   */
-  static isNone(fa: Option<unknown>): fa is None {
-    return fa._tag === 'None'
-  }
-
-  /**
-   * Returns `true` if the option is an instance of `Some`, `false` otherwise.
-   *
-   * @example
-   *   assert.strictEqual(O.isSome(O.Some(1)), true)
-   *   assert.strictEqual(O.isSome(O.None()), false)
-   *
-   * @param fa
-   */
-  static isSome<A>(fa: Option<A>): fa is Some<A> {
-    return fa._tag === 'Some'
-  }
-
   static of<A>(a: A): Option<A> {
     return new Some(a)
   }
@@ -311,6 +322,16 @@ export default abstract class AbstractOption<A = unknown> {
   }
 
   /**
+   * Indicates whether some other Option is "equal to" this one.
+   *
+   * @param that - The reference Option with which to compare.
+   * @returns `true` If this object is the same as the obj argument; `false` otherwise.
+   */
+  equals<A>(this: Option<A>, that: Option<A>): boolean {
+    return AbstractOption.equals(this, that)
+  }
+
+  /**
    * Returns true if this option is nonempty and the predicate p returns true
    * when applied to this Option's value. Otherwise, returns false.
    *
@@ -319,7 +340,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @param predicate - The predicate to test
    */
   exists<A>(this: Option<A>, predicate: F.Predicate<A>): boolean {
-    return this.isNone() ? false : predicate(this.value)
+    return P.exists(predicate)(this)
   }
 
   filter<A, B extends A>(
@@ -514,7 +535,7 @@ export default abstract class AbstractOption<A = unknown> {
    *   assert.strictEqual(isSome(none), false)
    */
   isSome(this: Option<A>): this is Some<A> {
-    return AbstractOption.isSome(this)
+    return P.isSome(this)
   }
 
   /**
@@ -918,9 +939,10 @@ export default abstract class AbstractOption<A = unknown> {
 /**
  * This Case Class represents non-existent values.
  *
+ * @beta
  * @internal
  */
-class None extends AbstractOption implements T.None {
+export class None extends AbstractOption implements T.None {
   // eslint-disable-next-line functional/prefer-readonly-type
   static #instance: None
   readonly _tag = 'None' as const
@@ -954,9 +976,10 @@ class None extends AbstractOption implements T.None {
 /**
  * This is the Case Class Some<A> represents existing values of type A.
  *
+ * @beta
  * @internal
  */
-class Some<A> extends AbstractOption<A> implements T.Some<A> {
+export class Some<A> extends AbstractOption<A> implements T.Some<A> {
   readonly _tag = 'Some' as const
 
   get isDefined(): boolean {

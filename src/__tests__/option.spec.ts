@@ -1,3 +1,4 @@
+/* eslint-disable jest/valid-title,eslint-comments/disable-enable-pair */
 import { describe, expect, it, jest, test } from '@jest/globals'
 
 import * as F from '../fuction'
@@ -7,8 +8,15 @@ import * as F from '../fuction'
  *   and methods form a given module to the current scope.
  */
 import _ from '../option/fluent'
+import * as P from '../option/pipable'
+import { pipe } from '../pipe'
 
 import type { Option } from '../option/fluent'
+
+enum OptionAPI {
+  fluent = 'fluent API',
+  pipable = 'pipable API',
+}
 
 class Utils {
   static readonly number = 10 as const
@@ -95,20 +103,34 @@ describe('Option', () => {
     })
   })
 
-  test('isNone', () => {
-    expect(_.none.isNone()).toBe(true)
-    expect(_.isNone(_.none)).toBe(true)
+  describe('isNone', () => {
+    test(OptionAPI.fluent, () => {
+      expect(_.none.isNone()).toBe(true)
+      expect(_.some(1).isNone()).toBe(false)
+    })
 
-    expect(_.some(1).isNone()).toBe(false)
-    expect(_.isNone(_.some(1))).toBe(false)
+    test(OptionAPI.pipable, () => {
+      expect(P.isNone(_.none)).toBe(true)
+      expect(_.isNone(_.none)).toBe(true)
+
+      expect(P.isNone(_.some(1))).toBe(false)
+      expect(_.isNone(_.some(1))).toBe(false)
+    })
   })
 
-  test('isSome', () => {
-    expect(_.some(1).isSome()).toBe(true)
-    expect(_.isSome(_.some(1))).toBe(true)
+  describe('isSome', () => {
+    test(OptionAPI.fluent, () => {
+      expect(_.some(1).isSome()).toBe(true)
+      expect(_.none.isSome()).toBe(false)
+    })
 
-    expect(_.none.isSome()).toBe(false)
-    expect(_.isSome(_.none)).toBe(false)
+    test(OptionAPI.pipable, () => {
+      expect(P.isSome(_.some(1))).toBe(true)
+      expect(_.isSome(_.some(1))).toBe(true)
+
+      expect(P.isSome(_.none)).toBe(false)
+      expect(_.isSome(_.none)).toBe(false)
+    })
   })
 
   test('mapNullable', () => {
@@ -188,11 +210,25 @@ describe('Option', () => {
     expect(_.some(1).orNull()).not.toBeNull()
   })
 
-  test('exists', () => {
+  describe('exists', () => {
     const predicate: F.Predicate<number> = (a) => a > 0
-    expect(_.some(1).exists(predicate)).toBe(true)
-    expect(_.some(1).exists((n) => n > 1)).toBe(false)
-    expect(_.none.exists(predicate)).toBe(false)
+
+    test(OptionAPI.fluent, () => {
+      expect(_.some(1).exists(predicate)).toBe(true)
+      expect(_.some(1).exists((n) => n > 1)).toBe(false)
+      expect(_.none.exists(predicate)).toBe(false)
+    })
+
+    test(OptionAPI.pipable, () => {
+      expect(pipe(P.exists(predicate))(_.some(1))).toBe(true)
+      expect(_.exists(predicate)(_.some(1))).toBe(true)
+
+      expect(pipe(P.exists((n: number) => n > 1))(_.some(1))).toBe(false)
+      expect(_.exists((n: number) => n > 1)(_.some(1))).toBe(false)
+
+      expect(pipe(P.exists(predicate))(_.none)).toBe(false)
+      expect(_.exists(predicate)(_.none)).toBe(false)
+    })
   })
 
   test('contains', () => {
