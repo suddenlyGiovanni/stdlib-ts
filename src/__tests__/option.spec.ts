@@ -1,8 +1,8 @@
 /* eslint-disable jest/valid-title,eslint-comments/disable-enable-pair */
 import { describe, expect, it, jest, test } from '@jest/globals'
-import { CLIEngine } from 'eslint'
 
 import * as F from '../fuction'
+
 /**
  * @privateRemarks
  *   `_` import is a Scala convention where we want to import all the functions
@@ -13,7 +13,6 @@ import * as P from '../option/pipable'
 import { pipe } from '../pipe'
 
 import type { Option } from '../option/fluent'
-import Options = CLIEngine.Options
 
 enum OptionAPI {
   fluent = 'fluent API',
@@ -47,7 +46,7 @@ class Utils {
 
 describe('Option', () => {
   describe('constructors', () => {
-    it('should provide a way to instantiate a `None` instance', () => {
+    test('should provide a way to instantiate a `None` instance', () => {
       expect(_.none).toMatchObject({ _tag: 'None' })
       expect(_.none.isNone()).toBe(true)
       expect(_.none.isSome()).toBe(false)
@@ -61,7 +60,7 @@ describe('Option', () => {
       expect(_.empty.isSome()).toBe(false)
     })
 
-    it('should provide a way to instantiate a `Some` instance', () => {
+    test('should provide a way to instantiate a `Some` instance', () => {
       expect(_.some(Utils.string)).toMatchObject({ _tag: 'Some' })
       expect(_.some(Utils.number)).toMatchObject({
         _tag: 'Some',
@@ -239,29 +238,55 @@ describe('Option', () => {
     expect(_.none.contains('anything')).toBe(false)
   })
 
-  test('fold/match', () => {
-    const onNone = (): string => 'a None'
-    const onSome = (s: string): string => `a Some of length ${s.length}`
+  describe('fold / foldW / match', () => {
+    const onNone: F.Lazy<string> = () => 'a None'
+    const onSomeW: (a: string) => number = (s) => s.length
+    const onSome: (a: string) => string = (s) => `a Some of length ${s.length}`
 
-    expect(
-      _.none.fold(
-        () => 'a None',
-        // @ts-expect-error asserting unreachable branch
-        F.absurd
-      )
-    ).toBe(onNone())
+    test(OptionAPI.fluent, () => {
+      expect(
+        _.none.fold(
+          () => 'a None',
+          // @ts-expect-error asserting unreachable branch
+          F.absurd
+        )
+      ).toBe(onNone())
 
-    expect(_.none.match(onNone, onSome)).toBe(onNone())
+      expect(_.none.matchW(onNone, onSomeW)).toBe(onNone())
 
-    expect(
-      _.some('abc').fold(
-        // @ts-expect-error asserting unreachable branch
-        F.absurd,
-        onSome
-      )
-    ).toBe('a Some of length 3')
+      expect(
+        _.some('abc').fold(
+          // @ts-expect-error asserting unreachable branch
+          F.absurd,
+          onSome
+        )
+      ).toBe('a Some of length 3')
+      expect(_.some('abc').foldW(onNone, onSomeW)).toBe(3)
 
-    expect(_.some('abc').match(onNone, onSome)).toBe('a Some of length 3')
+      expect(_.some('abc').matchW(onNone, onSome)).toBe('a Some of length 3')
+    })
+
+    test(OptionAPI.pipable, () => {
+      expect(
+        P.fold(
+          () => 'a None',
+          // @ts-expect-error asserting unreachable branch
+          F.absurd
+        )(_.none)
+      ).toBe(onNone())
+
+      expect(P.foldW(onNone, onSomeW)(_.none)).toBe(onNone())
+
+      expect(
+        P.fold(
+          // @ts-expect-error asserting unreachable branch
+          F.absurd,
+          onSome
+        )(_.some('abc'))
+      ).toBe('a Some of length 3')
+
+      expect(P.foldW(onNone, onSomeW)(_.some('abc'))).toBe(3)
+    })
   })
 
   test('map', () => {

@@ -14,9 +14,9 @@
  */
 
 import * as F from '../fuction'
+import * as P from './pipable'
 
 import type * as T from './model'
-import * as P from './pipable'
 
 /**
  * @beta
@@ -76,6 +76,22 @@ export default abstract class AbstractOption<A = unknown> {
    */
   static readonly flatten = P.flatten
 
+  /**
+   * Takes a (lazy) default value, a function, and an `Option` value, if the
+   * `Option` value is `None` the default value is returned, otherwise the
+   * function is applied to the value inside the `Some` and the result is returned.
+   *
+   * @beta
+   * @see {@link P.fold}
+   */
+  static readonly fold = P.fold
+
+  /**
+   * Less strict version of {@link fold}
+   *
+   * @beta
+   */
+  static readonly foldW = P.foldW
   /**
    * Returns `true` if the option is `None`, `false` otherwise.
    *
@@ -475,12 +491,26 @@ export default abstract class AbstractOption<A = unknown> {
    * @param onNone - The expression to evaluate if empty.
    * @param onSome - The function to apply if nonempty.
    */
-  fold<A, B, C>(
+  fold<A, B>(this: Option<A>, onNone: F.Lazy<B>, onSome: (a: A) => B): B {
+    return P.foldW(onNone, onSome)(this)
+  }
+
+  /**
+   * Returns the result of applying f to this Option's value if the Option is
+   * nonempty. Otherwise, evaluates expression ifEmpty.
+   *
+   * @remarks
+   *   This method is a port of Scala's Option interface.
+   * @param this
+   * @param onNone - The expression to evaluate if empty.
+   * @param onSome - The function to apply if nonempty.
+   */
+  foldW<A, B, C>(
     this: Option<A>,
     onNone: F.Lazy<B>,
     onSome: (a: A) => C
   ): B | C {
-    return this.isEmpty() ? onNone() : onSome(this.value)
+    return P.foldW(onNone, onSome)(this)
   }
 
   /**
@@ -666,19 +696,19 @@ export default abstract class AbstractOption<A = unknown> {
   }
 
   /**
-   * Alias for `fold`
+   * Alias for `foldW`
    *
    * @param this
    * @param onNone
    * @param onSome
-   * @see fold
+   * @see foldW
    */
-  match<A, B, C>(
+  matchW<A, B, C>(
     this: Option<A>,
     onNone: F.Lazy<B>,
     onSome: (a: A) => C
   ): B | C {
-    return this.fold(onNone, onSome)
+    return this.foldW(onNone, onSome)
   }
 
   /**

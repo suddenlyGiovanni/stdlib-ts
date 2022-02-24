@@ -1,5 +1,5 @@
 import * as F from '../fuction'
-import _, { None, Option } from './fluent'
+import _ from './fluent'
 
 import type * as T from './fluent'
 
@@ -80,8 +80,8 @@ export const filter: {
  */
 export const filterNot =
   <A>(predicate: F.Predicate<A>) =>
-  (fa: Option<A>): Option<A> => {
-    return isSome(fa) && !predicate(fa.value) ? fa : None.getInstance()
+  (fa: T.Option<A>): T.Option<A> => {
+    return isSome(fa) && !predicate(fa.value) ? fa : _.none
   }
 
 /**
@@ -94,15 +94,31 @@ export const filterNot =
  *   in that f is expected to return an Option (which could be None)
  */
 export const flatMap: <A, B>(
-  f: (a: A) => Option<B>
-) => (ma: Option<A>) => Option<B> = (f) => (ma) =>
+  f: (a: A) => T.Option<B>
+) => (ma: T.Option<A>) => T.Option<B> = (f) => (ma) =>
   isNone(ma) ? _.none : f(ma.value)
 
-export const compact: <A>(fa: Option<Option<A>>) => Option<A> = flatMap(
+export const compact: <A>(fa: T.Option<T.Option<A>>) => T.Option<A> = flatMap(
   F.identity
 )
 /**
  * Returns the nested Option value if it is nonempty. Otherwise, return None.
  * Derivable from `Chain` / 'flatMap'.
  */
-export const flatten: <A>(mma: Option<Option<A>>) => Option<A> = compact
+export const flatten: <A>(mma: T.Option<T.Option<A>>) => T.Option<A> = compact
+
+/** Less strict version of {@link fold} */
+export const foldW =
+  <A, B, C>(onNone: F.Lazy<B>, onSome: (a: A) => C) =>
+  (ma: T.Option<A>): B | C =>
+    isNone(ma) ? onNone() : onSome(ma.value)
+
+/**
+ * Takes a (lazy) default value, a function, and an `Option` value, if the
+ * `Option` value is `None` the default value is returned, otherwise the
+ * function is applied to the value inside the `Some` and the result is returned.
+ */
+export const fold: <A, B>(
+  onNone: F.Lazy<B>,
+  onSome: (a: A) => B
+) => (ma: T.Option<A>) => B = foldW
