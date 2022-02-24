@@ -1,3 +1,5 @@
+import _ from './fluent'
+
 import type * as F from '../fuction'
 import type * as T from './fluent'
 
@@ -57,3 +59,18 @@ export const exists =
   <A>(predicate: F.Predicate<A>) =>
   (ma: T.Option<A>): boolean =>
     isNone(ma) ? false : predicate(ma.value)
+
+/**
+ * @since 2.0.0
+ * @category Instance operations
+ */
+export const filter: {
+  <A, B extends A>(refinement: F.Refinement<A, B>): (
+    fa: T.Option<A>
+  ) => T.Option<B>
+  <A>(predicate: F.Predicate<A>): <B extends A>(fb: T.Option<B>) => T.Option<B>
+  <A>(predicate: F.Predicate<A>): (fa: T.Option<A>) => T.Option<A>
+} =
+  <A>(predicate: F.Predicate<A>) =>
+  (fa: T.Option<A>) =>
+    isNone(fa) ? _.none : predicate(fa.value) ? fa : _.none

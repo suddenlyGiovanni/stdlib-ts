@@ -32,13 +32,21 @@ export default abstract class AbstractOption<A = unknown> {
   static readonly exists = P.exists
 
   /**
+   * Returns this Option if it is nonempty and applying the predicate p to this
+   * Option's value returns true. Otherwise, return None.
+   *
+   * @beta
+   * @see {P.filter}
+   */
+  static readonly filter = P.filter
+
+  /**
    * Returns `true` if the option is `None`, `false` otherwise.
    *
    * @beta
    * @see {P.isNone}
    */
   static readonly isNone = P.isNone
-
   /**
    * Returns `true` if the option is an instance of `Some`, `false` otherwise.
    *
@@ -278,6 +286,7 @@ export default abstract class AbstractOption<A = unknown> {
   /**
    * Classic applicative
    *
+   * @param this
    * @param that - An Option instance holding an f: A => B
    */
   ap<A, B>(this: Option<A>, that: Option<(a: A) => B>): Option<B> {
@@ -291,6 +300,7 @@ export default abstract class AbstractOption<A = unknown> {
   /**
    * Builds a new Option constructed using the value of self
    *
+   * @param this
    * @param f - A function from A to Option<B>
    * @see flatMap
    */
@@ -313,6 +323,7 @@ export default abstract class AbstractOption<A = unknown> {
    *   // Returns false when method called on None.
    *   _.None.contains('anything')
    *
+   * @param this
    * @param elem - The element to test.
    * @returns True if the 2option has an element that is equal (as determined by
    *   ==) to elem, false otherwise.
@@ -324,6 +335,7 @@ export default abstract class AbstractOption<A = unknown> {
   /**
    * Indicates whether some other Option is "equal to" this one.
    *
+   * @param this
    * @param that - The reference Option with which to compare.
    * @returns `true` If this object is the same as the obj argument; `false` otherwise.
    */
@@ -337,20 +349,12 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param predicate - The predicate to test
    */
   exists<A>(this: Option<A>, predicate: F.Predicate<A>): boolean {
     return P.exists(predicate)(this)
   }
-
-  filter<A, B extends A>(
-    this: Option<A>,
-    refinement: F.Refinement<A, B>
-  ): Option<B>
-
-  filter<A, B extends A>(this: Option<B>, predicate: F.Predicate<A>): Option<B>
-
-  filter<A>(this: Option<A>, predicate: F.Predicate<A>): Option<A>
 
   /**
    * Returns this Option if it is nonempty and applying the predicate p to this
@@ -358,14 +362,17 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param predicate – the predicate used for testing.
    */
+  filter<A, B extends A>(
+    this: Option<A>,
+    refinement: F.Refinement<A, B>
+  ): Option<B>
+  filter<A, B extends A>(this: Option<B>, predicate: F.Predicate<A>): Option<B>
+  filter<A>(this: Option<A>, predicate: F.Predicate<A>): Option<A>
   filter<A>(this: Option<A>, predicate: F.Predicate<A>) {
-    return this.isNone()
-      ? None.getInstance()
-      : predicate(this.value)
-      ? this
-      : None.getInstance()
+    return P.filter(predicate)(this)
   }
 
   /**
@@ -383,6 +390,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param predicate – the predicate used for testing.
    */
   filterNot<A>(this: Option<A>, predicate: F.Predicate<A>): Option<A> {
@@ -396,6 +404,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param f - The function to apply
    * @see also: map
    * @see also: forEach chain
@@ -412,6 +421,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @example
    *   _.Some(_.Some('something')).flatten() // None | Some("something")
    *
+   * @param this
    * @see also: flatMap
    */
   flatten<A>(this: Option<Option<A>>): Option<A> {
@@ -424,6 +434,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param onNone - The expression to evaluate if empty.
    * @param onSome - The function to apply if nonempty.
    */
@@ -441,6 +452,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param f - The procedure to apply.
    * @see also: map
    * @see also: flatMap
@@ -465,6 +477,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param predicate – the predicate to test
    */
   forall<A>(this: Option<A>, predicate: F.Predicate<A>): boolean {
@@ -478,6 +491,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @remarks
    *   This method is a port of Scala's Option interface. This method is a port of
    *   effect-ts system's Option interface.
+   * @param this
    * @param onNone - A lazy function that returns a B
    */
   getOrElse<A, B extends A>(this: Option<A>, onNone: F.Lazy<B>): A | B {
@@ -490,6 +504,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * This is the specialized invariant version of getOrElse
    *
+   * @param this
    * @param onNone - A lazy function that returns a B
    * @see getOrElse, getOrElseW
    */
@@ -500,6 +515,8 @@ export default abstract class AbstractOption<A = unknown> {
   /**
    * Less strict version of [`getOrElse`](#getorelse).
    *
+   * @param this
+   * @param onNone
    * @see getOrElse
    */
   getOrElseW<A, B>(this: Option<A>, onNone: F.Lazy<B>): A | B {
@@ -511,6 +528,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    */
   isEmpty<A>(this: Option<A>): this is None {
     return this.isNone()
@@ -522,6 +540,8 @@ export default abstract class AbstractOption<A = unknown> {
    * @example
    *   assert.strictEqual(Option.Some(1).isNone(), false)
    *   assert.strictEqual(Option.None.isNone(), true)
+   *
+   * @param this
    */
   isNone(this: Option<A>): this is None {
     return AbstractOption.isNone(this)
@@ -533,6 +553,8 @@ export default abstract class AbstractOption<A = unknown> {
    * @example
    *   assert.strictEqual(isSome(some(1)), true)
    *   assert.strictEqual(isSome(none), false)
+   *
+   * @param this
    */
   isSome(this: Option<A>): this is Some<A> {
     return P.isSome(this)
@@ -544,6 +566,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param f - The function from A to B to apply
    * @note This is similar to flatMap except here, f does not need to wrap its result in an Option.
    * @see also: flatMap
@@ -593,6 +616,7 @@ export default abstract class AbstractOption<A = unknown> {
    *     none
    *   )
    *
+   * @param this
    * @param f - TODO: describe this better
    */
   mapNullable<_A, B>(
@@ -607,6 +631,7 @@ export default abstract class AbstractOption<A = unknown> {
   /**
    * Alias for `fold`
    *
+   * @param this
    * @param onNone
    * @param onSome
    * @see fold
@@ -644,6 +669,7 @@ export default abstract class AbstractOption<A = unknown> {
    * ```
    *
    *   Note: Implemented here to avoid the implicit conversion to Iterable.
+   * @param this
    */
   nonEmpty<A>(this: Option<A>): this is Some<A> {
     return this.isDefined
@@ -664,6 +690,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param alternative – the alternative expression.
    */
   orElse<A, B extends A>(
@@ -712,6 +739,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    */
   orNull<A>(this: Option<A>): A | null {
     return this.getOrElseW(() => null)
@@ -720,6 +748,7 @@ export default abstract class AbstractOption<A = unknown> {
   /**
    * Like chain but ignores the constructed output
    *
+   * @param this
    * @param f - TODO: add proper description
    */
   tap<A>(this: Option<A>, f: (a: A) => unknown): Option<A> {
@@ -743,6 +772,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    * @param right - The expression to evaluate and return if this is empty
    * @see also: toRight
    */
@@ -763,6 +793,7 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * @remarks
    *   This method is a port of Scala's Option interface.
+   * @param this
    */
   toList<A>(this: Option<A>): ReadonlyArray<A> {
     return this.isNone() ? ([] as ReadonlyArray<A>) : ([this.value] as const)
@@ -812,6 +843,7 @@ export default abstract class AbstractOption<A = unknown> {
   /**
    * The toString() method returns a string representing the object.
    *
+   * @param this
    * @returns A string representing the object.
    */
   toString<A>(this: Option<A>): 'None' | `Some(${string})` {
@@ -828,6 +860,8 @@ export default abstract class AbstractOption<A = unknown> {
    * @example
    *   assert.strictEqual(pipe(some(1), toUndefined), 1)
    *   assert.strictEqual(pipe(none, toUndefined), undefined)
+   *
+   * @param this
    */
   toUndefined<A>(this: Option<A>): A | undefined {
     return this.isNone() ? undefined : this.value
@@ -926,6 +960,7 @@ export default abstract class AbstractOption<A = unknown> {
    *   // Returns None because `this` option is empty.
    *   _.None.zip(_.Some('bar'))
    *
+   * @param this
    * @param that - The Options which is going to be zipped
    */
   zip<A, B>(

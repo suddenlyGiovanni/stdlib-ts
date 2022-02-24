@@ -380,11 +380,35 @@ describe('Option', () => {
     expect(_.none.unzip3()).toStrictEqual(F.tuple(_.none, _.none, _.none))
   })
 
-  test('filter', () => {
-    const predicate: F.Predicate<number> = (a) => a === 2
-    expect(_.none.filter(predicate)).toStrictEqual(_.none)
-    expect(_.some(1).filter(predicate)).toStrictEqual(_.none)
-    expect(_.some(2).filter(predicate)).toStrictEqual(_.some(2))
+  describe('filter', () => {
+    const isInteger: F.Predicate<number> = (a) => Number.isInteger(a)
+    const isPositive: F.Predicate<number> = (a) => a > 0
+    const isEven: F.Predicate<number> = (a) => a % 2 === 0
+    const isEqualTo2: F.Predicate<number> = (a) => a === 2
+
+    test(OptionAPI.fluent, () => {
+      const program = <A extends number>(fa: Option<A>) =>
+        fa
+          .filter(isInteger)
+          .filter(isPositive)
+          .filter(isEven)
+          .filter(isEqualTo2)
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(1))).toStrictEqual(_.none)
+      expect(program(_.some(2))).toStrictEqual(_.some(2))
+    })
+
+    test(OptionAPI.pipable, () => {
+      const program = pipe(
+        P.filter(isInteger),
+        _.filter(isPositive),
+        P.filter(isEven),
+        _.filter(isEqualTo2)
+      )
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(1))).toStrictEqual(_.none)
+      expect(program(_.some(2))).toStrictEqual(_.some(2))
+    })
   })
 
   test('filterNot', () => {
