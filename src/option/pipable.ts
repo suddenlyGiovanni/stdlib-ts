@@ -1,6 +1,6 @@
+import * as F from '../fuction'
 import _, { None, Option } from './fluent'
 
-import type * as F from '../fuction'
 import type * as T from './fluent'
 
 /**
@@ -97,3 +97,12 @@ export const flatMap: <A, B>(
   f: (a: A) => Option<B>
 ) => (ma: Option<A>) => Option<B> = (f) => (ma) =>
   isNone(ma) ? _.none : f(ma.value)
+
+export const compact: <A>(fa: Option<Option<A>>) => Option<A> = flatMap(
+  F.identity
+)
+/**
+ * Returns the nested Option value if it is nonempty. Otherwise, return None.
+ * Derivable from `Chain` / 'flatMap'.
+ */
+export const flatten: <A>(mma: Option<Option<A>>) => Option<A> = compact

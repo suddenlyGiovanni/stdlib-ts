@@ -66,6 +66,16 @@ export default abstract class AbstractOption<A = unknown> {
    * @see {P.flatMap}
    */
   static readonly flatMap = P.flatMap
+
+  /**
+   * Returns the nested Option value if it is nonempty. Otherwise, return None.
+   * Derivable from `Chain` / 'flatMap'.
+   *
+   * @beta
+   * @see {P.flatten}
+   */
+  static readonly flatten = P.flatten
+
   /**
    * Returns `true` if the option is `None`, `false` otherwise.
    *
@@ -452,7 +462,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @see also: flatMap
    */
   flatten<A>(this: Option<Option<A>>): Option<A> {
-    return this.flatMap(F.identity)
+    return P.flatten(this)
   }
 
   /**

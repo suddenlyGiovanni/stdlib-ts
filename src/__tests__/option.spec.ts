@@ -1,5 +1,6 @@
 /* eslint-disable jest/valid-title,eslint-comments/disable-enable-pair */
 import { describe, expect, it, jest, test } from '@jest/globals'
+import { CLIEngine } from 'eslint'
 
 import * as F from '../fuction'
 /**
@@ -12,6 +13,7 @@ import * as P from '../option/pipable'
 import { pipe } from '../pipe'
 
 import type { Option } from '../option/fluent'
+import Options = CLIEngine.Options
 
 enum OptionAPI {
   fluent = 'fluent API',
@@ -350,20 +352,32 @@ describe('Option', () => {
     })
   })
 
-  test('flatten', () => {
-    expect(_.some(_.some(1)).flatten()).toStrictEqual(_.some(1))
-    expect(_.some(_.none).flatten()).toStrictEqual(_.none)
-    expect(_.none.flatten()).toStrictEqual(_.none)
-    /**
-     * The 'this' context of type `Some<number>` is not assignable to method's
-     * 'this' of type `Option<Option<unknown>>`. Type 'Some<number>' is not
-     * assignable to type `Some<Option<unknown>>`. Type 'number' is not
-     * assignable to type `Option<unknown>`.
-     */
-    expect(
-      // @ts-expect-error: TS2684:
-      _.some(1).flatten()
-    ).toBe(1)
+  describe('flatten', () => {
+    test(OptionAPI.fluent, () => {
+      expect(_.some(_.some(1)).flatten()).toStrictEqual(_.some(1))
+      expect(_.some(_.none).flatten()).toStrictEqual(_.none)
+      expect(_.none.flatten()).toStrictEqual(_.none)
+      /**
+       * The 'this' context of type `Some<number>` is not assignable to method's
+       * 'this' of type `Option<Option<unknown>>`. Type 'Some<number>' is not
+       * assignable to type `Some<Option<unknown>>`. Type 'number' is not
+       * assignable to type `Option<unknown>`.
+       */
+      expect(
+        // @ts-expect-error: TS2684:
+        _.some(1).flatten()
+      ).toBe(1)
+    })
+
+    it(OptionAPI.pipable, () => {
+      const maybeMaybeA = _.some(_.some(1))
+
+      expect(P.compact(maybeMaybeA)).toStrictEqual(_.some(1))
+      expect(_.flatten(maybeMaybeA)).toStrictEqual(_.some(1))
+
+      expect(P.compact(_.some(_.none))).toStrictEqual(_.none)
+      expect(_.flatten(_.none)).toStrictEqual(_.none)
+    })
   })
 
   test('zip', () => {
