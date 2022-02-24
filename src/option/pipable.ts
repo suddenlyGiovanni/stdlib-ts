@@ -1,4 +1,4 @@
-import _ from './fluent'
+import _, { None, Option } from './fluent'
 
 import type * as F from '../fuction'
 import type * as T from './fluent'
@@ -60,10 +60,6 @@ export const exists =
   (ma: T.Option<A>): boolean =>
     isNone(ma) ? false : predicate(ma.value)
 
-/**
- * @since 2.0.0
- * @category Instance operations
- */
 export const filter: {
   <A, B extends A>(refinement: F.Refinement<A, B>): (
     fa: T.Option<A>
@@ -74,3 +70,16 @@ export const filter: {
   <A>(predicate: F.Predicate<A>) =>
   (fa: T.Option<A>) =>
     isNone(fa) ? _.none : predicate(fa.value) ? fa : _.none
+
+/**
+ * Returns this Option if it is nonempty and applying the predicate p to this
+ * Option's value returns false. Otherwise, return None
+ *
+ * @remarks
+ *   This method is a port of Scala's Option interface.
+ */
+export const filterNot =
+  <A>(predicate: F.Predicate<A>) =>
+  (fa: Option<A>): Option<A> => {
+    return isSome(fa) && !predicate(fa.value) ? fa : None.getInstance()
+  }

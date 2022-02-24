@@ -41,12 +41,22 @@ export default abstract class AbstractOption<A = unknown> {
   static readonly filter = P.filter
 
   /**
+   * Returns this Option if it is nonempty and applying the predicate p to this
+   * Option's value returns false. Otherwise, return None
+   *
+   * @beta
+   * @see {P.filterNot}
+   */
+  static readonly filterNot = P.filterNot
+
+  /**
    * Returns `true` if the option is `None`, `false` otherwise.
    *
    * @beta
    * @see {P.isNone}
    */
   static readonly isNone = P.isNone
+
   /**
    * Returns `true` if the option is an instance of `Some`, `false` otherwise.
    *
@@ -54,6 +64,9 @@ export default abstract class AbstractOption<A = unknown> {
    * @see {P.isSome}
    */
   static readonly isSome = P.isSome
+
+  abstract readonly _tag: T.Option<unknown>['_tag']
+
   /**
    * Returns a singleton iterator returning the Option's value if it is
    * nonempty, or an empty iterator if the option is empty.
@@ -61,9 +74,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @remarks
    *   This method is a port of Scala's Option interface.
    */
-
-  // abstract iterator: Iterator<A> // TODO: provide implementation
-  abstract readonly _tag: T.Option<unknown>['_tag']
+  abstract iterator: Iterator<A> // TODO: provide implementation
 
   /**
    * String value that is used in the creation of the default string description
@@ -394,7 +405,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @param predicate – the predicate used for testing.
    */
   filterNot<A>(this: Option<A>, predicate: F.Predicate<A>): Option<A> {
-    return this.isSome() && !predicate(this.value) ? this : None.getInstance()
+    return P.filterNot(predicate)(this)
   }
 
   /**

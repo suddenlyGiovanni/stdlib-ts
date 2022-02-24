@@ -381,13 +381,15 @@ describe('Option', () => {
   })
 
   describe('filter', () => {
-    const isInteger: F.Predicate<number> = (a) => Number.isInteger(a)
-    const isPositive: F.Predicate<number> = (a) => a > 0
-    const isEven: F.Predicate<number> = (a) => a % 2 === 0
-    const isEqualTo2: F.Predicate<number> = (a) => a === 2
+    type Int = number & { readonly _tag: 'Int' }
+    const isInteger: F.Refinement<number, Int> = (a): a is Int =>
+      Number.isInteger(a)
+    const isPositive: F.Predicate<Int> = (a) => a > 0
+    const isEven: F.Predicate<Int> = (a) => a % 2 === 0
+    const isEqualTo2: F.Predicate<Int> = (a) => a === 2
 
     test(OptionAPI.fluent, () => {
-      const program = <A extends number>(fa: Option<A>) =>
+      const program = (fa: Option<number>): Option<Int> =>
         fa
           .filter(isInteger)
           .filter(isPositive)
@@ -411,11 +413,33 @@ describe('Option', () => {
     })
   })
 
-  test('filterNot', () => {
-    const predicate: F.Predicate<number> = (a) => a === 2
-    expect(_.none.filterNot(predicate)).toStrictEqual(_.none)
-    expect(_.some(1).filterNot(predicate)).toStrictEqual(_.some(1))
-    expect(_.some(2).filterNot(predicate)).toStrictEqual(_.none)
+  describe('filterNot', function () {
+    const isPositive: F.Predicate<number> = (a) => a > 0
+    const isEven: F.Predicate<number> = (a) => a % 2 === 0
+    const isEqualTo2: F.Predicate<number> = (a) => a === 2
+
+    test(OptionAPI.fluent, () => {
+      const program = <A extends number>(fa: Option<A>): Option<A> =>
+        fa
+          .filterNot(isEven) //
+          .filterNot(isPositive) //
+          .filterNot(isEqualTo2) //
+
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(-0.1))).toStrictEqual(_.some(-0.1))
+      expect(program(_.some(2))).toStrictEqual(_.none)
+    })
+
+    test(OptionAPI.pipable, () => {
+      const program = pipe(
+        P.filterNot(isEven),
+        _.filterNot(isPositive), // here we are testing that also the static method behaves accordingly
+        P.filterNot(isEqualTo2)
+      )
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(-1))).toStrictEqual(_.some(-1))
+      expect(program(_.some(2))).toStrictEqual(_.none)
+    })
   })
 
   test('tap', () => {
