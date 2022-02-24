@@ -318,17 +318,36 @@ describe('Option', () => {
     expect(_.none.ap(_.none)).toStrictEqual(_.none)
   })
 
-  test('chain / flatMap', () => {
-    const f = (n: number) => _.some(n * 2)
-    const g = () => _.none
-    expect(_.some(1).chain(f)).toStrictEqual(_.some(2))
-    expect(_.some(1).flatMap(f)).toStrictEqual(_.some(2))
-    expect(_.none.chain(f)).toStrictEqual(_.none)
-    expect(_.none.flatMap(f)).toStrictEqual(_.none)
-    expect(_.some(1).chain(g)).toStrictEqual(_.none)
-    expect(_.some(1).flatMap(g)).toStrictEqual(_.none)
-    expect(_.none.chain(g)).toStrictEqual(_.none)
-    expect(_.none.flatMap(g)).toStrictEqual(_.none)
+  describe('flatMap / chain', () => {
+    const double: (a: number) => Option<number> = (n) => _.some(n * 2)
+    const square: (a: number) => Option<number> = (n) => _.some(Math.pow(n, 2))
+
+    const g: (a: number) => Option<number> = () => _.none
+
+    test(OptionAPI.fluent, () => {
+      const program = <A extends number>(ma: Option<A>) =>
+        ma
+          .flatMap(double) //
+          .chain(square) // we are also testing the alias
+
+      expect(program(_.some(1))).toStrictEqual(_.some(4))
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(1)).flatMap(g)).toStrictEqual(_.none)
+      expect(program(_.none).flatMap(g)).toStrictEqual(_.none)
+    })
+
+    test(OptionAPI.pipable, () => {
+      const program = pipe(
+        P.flatMap(double),
+        _.flatMap((x: number) => _.some(x)), // identity
+        _.chain(square)
+      )
+
+      expect(program(_.some(1))).toStrictEqual(_.some(4))
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(pipe(P.flatMap(g), program)(_.some(1))).toStrictEqual(_.none)
+      expect(pipe(_.chain(g), program)(_.none)).toStrictEqual(_.none)
+    })
   })
 
   test('flatten', () => {

@@ -83,3 +83,17 @@ export const filterNot =
   (fa: Option<A>): Option<A> => {
     return isSome(fa) && !predicate(fa.value) ? fa : None.getInstance()
   }
+
+/**
+ * Composes computations in sequence, using the return value of one computation
+ * to determine the next computation.
+ *
+ * @remarks
+ *   Returns the result of applying f to this Option's value if this Option is
+ *   nonempty. Returns None if this Option is empty. Slightly different from map
+ *   in that f is expected to return an Option (which could be None)
+ */
+export const flatMap: <A, B>(
+  f: (a: A) => Option<B>
+) => (ma: Option<A>) => Option<B> = (f) => (ma) =>
+  isNone(ma) ? _.none : f(ma.value)
