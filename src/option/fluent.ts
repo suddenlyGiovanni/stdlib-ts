@@ -22,7 +22,9 @@ import type * as T from './model'
  * @beta
  * @public
  */
-export default abstract class AbstractOption<A = unknown> {
+export default abstract class AbstractOption<A = unknown>
+  implements Iterable<A>
+{
   /**
    * Composes computations in sequence, using the return value of one
    * computation to determine the next computation.
@@ -145,14 +147,6 @@ export default abstract class AbstractOption<A = unknown> {
   static readonly isSome = P.isSome
   /** Discriminated union tag */
   abstract readonly _tag: T.Option<unknown>['_tag']
-  /**
-   * Returns a singleton iterator returning the Option's value if it is
-   * nonempty, or an empty iterator if the option is empty.
-   *
-   * @remarks
-   *   This method is a port of Scala's Option interface.
-   */
-  abstract iterator: Iterator<A> // TODO: provide implementation
 
   /**
    * String value that is used in the creation of the default string description
@@ -370,6 +364,18 @@ export default abstract class AbstractOption<A = unknown> {
    */
   static when<A>(cond: boolean): (a: F.Lazy<A>) => Option<A> {
     return (a) => (cond ? new Some(a()) : None.getInstance())
+  }
+
+  /**
+   * Returns a singleton iterator returning the Option's value if it is
+   * nonempty, or an empty iterator if the option is empty.
+   *
+   * @remarks
+   *   This method is a port of Scala's Option interface.
+   */
+  *[Symbol.iterator](this: Option<A>): IterableIterator<A> {
+    if (this.isNone()) return
+    yield this.value
   }
 
   /**

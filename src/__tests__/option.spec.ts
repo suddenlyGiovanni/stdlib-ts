@@ -1,13 +1,12 @@
 /* eslint-disable jest/valid-title,eslint-comments/disable-enable-pair */
 import { describe, expect, it, jest, test } from '@jest/globals'
 
-import * as F from '../fuction'
-
 /**
  * @privateRemarks
  *   `_` import is a Scala convention where we want to import all the functions
  *   and methods form a given module to the current scope.
  */
+import * as F from '../fuction'
 import _ from '../option/fluent'
 import * as P from '../option/pipable'
 import { pipe } from '../pipe'
@@ -672,5 +671,66 @@ describe('Option', () => {
 
     expect(_.equals(maybe1, _.some(2))).toBe(false)
     expect(maybe1.equals(_.some(2))).toBe(false)
+  })
+
+  describe('iterable', () => {
+    const iteratorInterface: Iterator<unknown> = {
+      next: (): IteratorResult<unknown> => ({ value: undefined, done: true }),
+    }
+
+    it('should return an iterator', () => {
+      expect(_.some(42)[Symbol.iterator]()).toHaveProperty(
+        Object.keys(iteratorInterface)
+      )
+
+      expect(_.none[Symbol.iterator]()).toHaveProperty(
+        Object.keys(iteratorInterface)
+      )
+    })
+
+    it('should iterate Some', () => {
+      const value = 42 as const
+      const lazyIterable: F.Lazy<Iterator<number>> = () =>
+        _.some(value)[Symbol.iterator]()
+
+      expect(lazyIterable().next()).toHaveProperty(['value'])
+
+      const itResult: IteratorYieldResult<number> = { done: false, value } // FIXME: verify the correct value for the flag done within iteration
+      expect(lazyIterable().next()).toStrictEqual(itResult)
+      expect(lazyIterable().next()).toStrictEqual(itResult)
+    })
+
+    it('should iterate over None', () => {
+      const itResult: IteratorReturnResult<void> = {
+        done: true,
+        value: undefined,
+      }
+      const it = _.none[Symbol.iterator]()
+
+      expect(it.next()).toStrictEqual(itResult)
+    })
+
+    it('should be able to integrate methods supporting `iterable` protocol', () => {
+      // arrange
+
+      const n = 42
+      const maybeNumber = _.some(n)
+
+      // act
+      const result = new Set<number>(maybeNumber)
+
+      // assert
+      expect(result.has(n)).toBeTruthy()
+
+      // act again
+      result.clear()
+      for (const number of maybeNumber) {
+        result.add(number + 1)
+      }
+      expect(result).toContainEqual(n + 1)
+
+      // asset again
+      expect([...maybeNumber]).toStrictEqual([n])
+    })
   })
 })
