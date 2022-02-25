@@ -95,6 +95,15 @@ export default abstract class AbstractOption<A = unknown> {
   static readonly foldW = P.foldW
 
   /**
+   * Apply the given procedure `f` to the Option's value, if it is nonempty.
+   * Otherwise, do nothing.
+   *
+   * @beta
+   * @see {@link P.forEach}
+   */
+  static readonly forEach = P.forEach
+
+  /**
    * Returns true if this option is empty or the predicate p returns true when
    * applied to this Option's value.
    *
@@ -102,7 +111,6 @@ export default abstract class AbstractOption<A = unknown> {
    * @see {@link P.forall}
    */
   static readonly forall = P.forall
-
   /**
    * Returns `true` if the option is `None`, `false` otherwise.
    *
@@ -117,7 +125,10 @@ export default abstract class AbstractOption<A = unknown> {
    * @see {P.isSome}
    */
   static readonly isSome = P.isSome
+
+  /** Discriminated union tag */
   abstract readonly _tag: T.Option<unknown>['_tag']
+
   /**
    * Returns a singleton iterator returning the Option's value if it is
    * nonempty, or an empty iterator if the option is empty.
@@ -537,7 +548,7 @@ export default abstract class AbstractOption<A = unknown> {
    */
   // eslint-disable-next-line functional/no-return-void
   forEach<A, U>(this: Option<A>, f: (a: A) => U): void {
-    if (!this.isEmpty()) f(this.value)
+    P.forEach(f)(this)
   }
 
   /**

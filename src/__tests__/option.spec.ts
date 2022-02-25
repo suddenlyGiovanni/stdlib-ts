@@ -567,20 +567,38 @@ describe('Option', () => {
     )
   })
 
-  test('forEach', () => {
-    const actual: number[] = []
+  describe('forEach', () => {
+    test(OptionAPI.fluent, () => {
+      const actual: number[] = []
 
-    // act 1
-    _.none.forEach((x: number) => actual.push(x))
+      // act 1
+      _.none.forEach((x: number) => actual.push(x))
 
-    // assert 1
-    expect(actual).toStrictEqual([])
+      // assert 1
+      expect(actual).toStrictEqual([])
 
-    // act 2
-    _.some(Utils.number).forEach((n) => actual.push(n))
+      // act 2
+      _.some(Utils.number).forEach((n) => actual.push(n))
 
-    // assert 2
-    expect(actual).toContainEqual(Utils.number)
+      // assert 2
+      expect(actual).toContainEqual(Utils.number)
+    })
+
+    test(OptionAPI.pipable, () => {
+      const actual: number[] = []
+
+      // act 1
+      P.forEach((x: number) => actual.push(x))(_.none)
+
+      // assert 1
+      expect(actual).toStrictEqual([])
+
+      // act 2
+      _.forEach((n: number) => actual.push(n))(_.some(Utils.number))
+
+      // assert 2
+      expect(actual).toContainEqual(Utils.number)
+    })
   })
 
   describe('forall', () => {

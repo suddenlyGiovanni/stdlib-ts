@@ -132,3 +132,17 @@ export const forall =
   (ma: Option<A>): boolean => {
     return isNone(ma) || predicate(ma.value)
   }
+
+/* eslint-disable functional/no-conditional-statement, functional/no-expression-statement, functional/no-return-void */
+/**
+ * Apply the given procedure `f` to the Option's value, if it is nonempty.
+ * Otherwise, do nothing.
+ */
+export const forEach =
+  <A, U>(f: (a: A) => U) =>
+  (fa: Option<A>): void => {
+    if (!isNone(fa)) {
+      f(fa.value)
+    }
+  }
+/* eslint-enable functional/no-conditional-statement, functional/no-expression-statement, functional/no-return-void */
