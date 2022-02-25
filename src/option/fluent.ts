@@ -90,8 +90,19 @@ export default abstract class AbstractOption<A = unknown> {
    * Less strict version of {@link fold}
    *
    * @beta
+   * @see {@link P.foldW}
    */
   static readonly foldW = P.foldW
+
+  /**
+   * Returns true if this option is empty or the predicate p returns true when
+   * applied to this Option's value.
+   *
+   * @beta
+   * @see {@link P.forall}
+   */
+  static readonly forall = P.forall
+
   /**
    * Returns `true` if the option is `None`, `false` otherwise.
    *
@@ -548,7 +559,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @param predicate – the predicate to test
    */
   forall<A>(this: Option<A>, predicate: F.Predicate<A>): boolean {
-    return this.isNone() || predicate(this.value)
+    return P.forall(predicate)(this)
   }
 
   /**

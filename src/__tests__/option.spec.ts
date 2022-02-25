@@ -583,11 +583,20 @@ describe('Option', () => {
     expect(actual).toContainEqual(Utils.number)
   })
 
-  test('forall', () => {
+  describe('forall', () => {
     const isEven: F.Predicate<number> = (x: number) => x % 2 === 0
-    expect(_.none.forall(isEven)).toBe(true)
-    expect(_.some(Utils.number).forall(isEven)).toBe(true)
-    expect(_.some(9).forall(isEven)).toBe(false)
+
+    test(OptionAPI.fluent, () => {
+      expect(_.none.forall(isEven)).toBe(true)
+      expect(_.some(Utils.number).forall(isEven)).toBe(true)
+      expect(_.some(9).forall(isEven)).toBe(false)
+    })
+
+    test(OptionAPI.pipable, () => {
+      expect(P.forall(isEven)(_.none)).toBe(true)
+      expect(P.forall(isEven)(_.some(Utils.number))).toBe(true)
+      expect(_.forall(isEven)(_.some(9))).toBe(false)
+    })
   })
 
   test('unless', () => {

@@ -1,5 +1,5 @@
 import * as F from '../fuction'
-import _ from './fluent'
+import _, { Option } from './fluent'
 
 import type * as T from './fluent'
 
@@ -122,3 +122,13 @@ export const fold: <A, B>(
   onNone: F.Lazy<B>,
   onSome: (a: A) => B
 ) => (ma: T.Option<A>) => B = foldW
+
+/**
+ * Returns true if this option is empty or the predicate p returns true when
+ * applied to this Option's value.
+ */
+export const forall =
+  <A>(predicate: F.Predicate<A>) =>
+  (ma: Option<A>): boolean => {
+    return isNone(ma) || predicate(ma.value)
+  }
