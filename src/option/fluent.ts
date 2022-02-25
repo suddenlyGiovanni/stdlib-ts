@@ -111,6 +111,24 @@ export default abstract class AbstractOption<A = unknown> {
    * @see {@link P.forall}
    */
   static readonly forall = P.forall
+
+  /**
+   * Extracts the value out of the structure, if it exists. Otherwise returns
+   * the given default value
+   *
+   * @beta
+   * @see {@link P.getOrElse}
+   */
+  static readonly getOrElse = P.getOrElse
+
+  /**
+   * Less strict version of {@link P.getOrElse}
+   *
+   * @beta
+   * @see {@link P.getOrElseW}
+   */
+  static readonly getOrElseW = P.getOrElseW
+
   /**
    * Returns `true` if the option is `None`, `false` otherwise.
    *
@@ -125,10 +143,8 @@ export default abstract class AbstractOption<A = unknown> {
    * @see {P.isSome}
    */
   static readonly isSome = P.isSome
-
   /** Discriminated union tag */
   abstract readonly _tag: T.Option<unknown>['_tag']
-
   /**
    * Returns a singleton iterator returning the Option's value if it is
    * nonempty, or an empty iterator if the option is empty.
@@ -583,8 +599,8 @@ export default abstract class AbstractOption<A = unknown> {
    * @param this
    * @param onNone - A lazy function that returns a B
    */
-  getOrElse<A, B extends A>(this: Option<A>, onNone: F.Lazy<B>): A | B {
-    return this.getOrElseW(onNone)
+  getOrElse<A>(this: Option<A>, onNone: F.Lazy<A>): A {
+    return P.getOrElse(onNone)(this)
   }
 
   /**
@@ -593,12 +609,14 @@ export default abstract class AbstractOption<A = unknown> {
    *
    * This is the specialized invariant version of getOrElse
    *
+   * @remarks
+   *   This is an alias for getOrElse
    * @param this
    * @param onNone - A lazy function that returns a B
    * @see getOrElse, getOrElseW
    */
   getOrElseInv<A>(this: Option<A>, onNone: F.Lazy<A>): A {
-    return this.getOrElse(onNone)
+    return P.getOrElse(onNone)(this)
   }
 
   /**
@@ -609,7 +627,7 @@ export default abstract class AbstractOption<A = unknown> {
    * @see getOrElse
    */
   getOrElseW<A, B>(this: Option<A>, onNone: F.Lazy<B>): A | B {
-    return this.isNone() ? onNone() : this.value
+    return P.getOrElseW(onNone)(this)
   }
 
   /**

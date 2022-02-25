@@ -190,19 +190,30 @@ describe('Option', () => {
     expect(_.some(fn).value).toStrictEqual(fn)
   })
 
-  test('getOrElse', () => {
-    expect(_.some(1).getOrElse(() => 0)).toBe(1)
-    expect(_.none.getOrElse(() => 0)).toBe(0)
-  })
+  describe('getOrElse / getOrElseW / getOrElseInv', () => {
+    test(OptionAPI.fluent, () => {
+      // getOrElse
+      expect(_.some(1).getOrElse(() => 0)).toBe(1)
+      expect(_.none.getOrElse(() => 0)).toBe(0)
 
-  test('getOrElseW', () => {
-    expect(_.some(1).getOrElseW(() => 'zero')).toBe(1)
-    expect(_.empty.getOrElseW(() => 'zero')).toBe('zero')
-  })
+      // getOrElseW
+      expect(_.some(1).getOrElseW(() => 'zero')).toBe(1)
+      expect(_.empty.getOrElseW(() => 'zero')).toBe('zero')
 
-  test('getOrElseInv', () => {
-    expect(_.some(F.literal('foo')).getOrElseInv(() => 'bar')).toBe('foo')
-    expect(_.empty.getOrElseInv(() => F.literal('bar'))).toBe('bar')
+      // getOrElseInv
+      expect(_.some(F.literal('foo')).getOrElseInv(() => 'bar')).toBe('foo')
+      expect(_.empty.getOrElseInv(() => F.literal('bar'))).toBe('bar')
+    })
+
+    test(OptionAPI.pipable, () => {
+      // getOrElseW
+      expect(P.getOrElseW(() => 'zero')(_.some(1))).toBe(1)
+      expect(_.getOrElseW(() => 'zero')(_.empty)).toBe('zero')
+
+      // getOrElse
+      expect(P.getOrElse(() => 0)(_.some(1))).toBe(1)
+      expect(_.getOrElse(() => 0)(_.none)).toBe(0)
+    })
   })
 
   test('orNull', () => {

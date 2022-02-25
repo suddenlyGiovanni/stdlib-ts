@@ -146,3 +146,16 @@ export const forEach =
     }
   }
 /* eslint-enable functional/no-conditional-statement, functional/no-expression-statement, functional/no-return-void */
+
+/** Less strict version of {@link getOrElse} */
+export const getOrElseW =
+  <B>(onNone: F.Lazy<B>) =>
+  <A>(ma: T.Option<A>): A | B =>
+    isNone(ma) ? onNone() : ma.value
+
+/**
+ * Extracts the value out of the structure, if it exists. Otherwise returns the
+ * given default value
+ */
+export const getOrElse: <A>(onNone: F.Lazy<A>) => (ma: T.Option<A>) => A =
+  getOrElseW
