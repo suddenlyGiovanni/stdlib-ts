@@ -1,7 +1,7 @@
 import * as F from '../fuction'
-import _, { Option } from './fluent'
 
 import type * as T from './fluent'
+import _, { Option } from './fluent'
 
 /**
  * Returns `true` if the option is an instance of `Some`, `false` otherwise.
@@ -159,3 +159,7 @@ export const getOrElseW =
  */
 export const getOrElse: <A>(onNone: F.Lazy<A>) => (ma: T.Option<A>) => A =
   getOrElseW
+
+export const map: <A, B>(f: (a: A) => B) => (fa: T.Option<A>) => T.Option<B> =
+  (f) => (fa) =>
+    isNone(fa) ? _.none : _.some(f(fa.value))

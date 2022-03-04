@@ -7,11 +7,10 @@ import { describe, expect, it, jest, test } from '@jest/globals'
  *   and methods form a given module to the current scope.
  */
 import * as F from '../fuction'
+import type { Option } from '../option/fluent'
 import _ from '../option/fluent'
 import * as P from '../option/pipable'
 import { pipe } from '../pipe'
-
-import type { Option } from '../option/fluent'
 
 enum OptionAPI {
   fluent = 'fluent API',
@@ -299,16 +298,27 @@ describe('Option', () => {
     })
   })
 
-  test('map', () => {
+  describe('map', () => {
     const someA: Option<1> = _.some(1 as const)
     const someB: Option<'1'> = _.some(F.literal('1'))
-
-    expect(_.some(2).map(Utils.double)).toStrictEqual(_.some(4))
-    expect(someA.map(Utils.fromNumberToString)).toStrictEqual(someB)
-
     const noneA = _.empty
-    expect(_.none.map(Utils.double)).toStrictEqual(_.none)
-    expect(noneA.map(Utils.fromNumberToString)).toStrictEqual(_.none)
+    const someOf2 = _.some(2)
+
+    test(OptionAPI.pipable, () => {
+      expect(P.map(Utils.double)(someOf2)).toStrictEqual(_.some(4))
+      expect(_.map(Utils.fromNumberToString)(someA)).toStrictEqual(someB)
+
+      expect(P.map(Utils.double)(_.none)).toStrictEqual(_.none)
+      expect(_.map(Utils.fromNumberToString)(noneA)).toStrictEqual(_.none)
+    })
+
+    test(OptionAPI.fluent, () => {
+      expect(someOf2.map(Utils.double)).toStrictEqual(_.some(4))
+      expect(someA.map(Utils.fromNumberToString)).toStrictEqual(someB)
+
+      expect(_.none.map(Utils.double)).toStrictEqual(_.none)
+      expect(noneA.map(Utils.fromNumberToString)).toStrictEqual(_.none)
+    })
   })
 
   test('toUndefined', () => {

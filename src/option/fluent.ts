@@ -14,9 +14,9 @@
  */
 
 import * as F from '../fuction'
-import * as P from './pipable'
 
 import type * as T from './model'
+import * as P from './pipable'
 
 /**
  * @beta
@@ -138,6 +138,7 @@ export default abstract class AbstractOption<A = unknown>
    * @see {P.isNone}
    */
   static readonly isNone = P.isNone
+
   /**
    * Returns `true` if the option is an instance of `Some`, `false` otherwise.
    *
@@ -145,6 +146,16 @@ export default abstract class AbstractOption<A = unknown>
    * @see {P.isSome}
    */
   static readonly isSome = P.isSome
+
+  /**
+   * Returns a Some containing the result of applying f to this Option's value
+   * if this Option is nonempty. Otherwise, return None.
+   *
+   * @beta
+   * @see {@link P.map}
+   */
+  static readonly map = P.map
+
   /** Discriminated union tag */
   abstract readonly _tag: T.Option<unknown>['_tag']
 
@@ -686,7 +697,7 @@ export default abstract class AbstractOption<A = unknown>
    * @see also: forEach
    */
   map<A, B>(this: Option<A>, f: (a: A) => B): Option<B> {
-    return this.isNone() ? None.getInstance() : new Some<B>(f(this.value))
+    return P.map(f)(this)
   }
 
   /**
