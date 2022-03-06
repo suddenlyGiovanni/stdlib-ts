@@ -12,7 +12,7 @@ specifiers:
   eslint-plugin-import: 2.25.4
   eslint-plugin-jest: 26.1.1
   eslint-plugin-jest-formatting: 3.1.0
-  eslint-plugin-jsdoc: 37.9.6
+  eslint-plugin-jsdoc: 37.9.7
   eslint-plugin-tsdoc: 0.2.14
   jest: 27.5.1
   prettier: 2.5.1
@@ -38,7 +38,7 @@ devDependencies:
   eslint-plugin-import: 2.25.4_eslint@8.10.0
   eslint-plugin-jest: 26.1.1_6471581eabfd588523a344337c838f00
   eslint-plugin-jest-formatting: 3.1.0_eslint@8.10.0
-  eslint-plugin-jsdoc: 37.9.6_eslint@8.10.0
+  eslint-plugin-jsdoc: 37.9.7_eslint@8.10.0
   eslint-plugin-tsdoc: 0.2.14
   jest: 27.5.1
   prettier: 2.5.1
@@ -1771,8 +1771,8 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-jsdoc/37.9.6_eslint@8.10.0:
-    resolution: {integrity: sha512-GDCB0nEwKVaeIzam+t/yB8XG/6tgvc9XgrSwuxqCXVlKRWUqTuTqntZoqAKZAIbWIgYsrnrvrWAyIX/QvhwBcw==}
+  /eslint-plugin-jsdoc/37.9.7_eslint@8.10.0:
+    resolution: {integrity: sha512-8alON8yYcStY94o0HycU2zkLKQdcS+qhhOUNQpfONHHwvI99afbmfpYuPqf6PbLz5pLZldG3Te5I0RbAiTN42g==}
     engines: {node: ^12 || ^14 || ^16 || ^17}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
