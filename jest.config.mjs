@@ -1,3 +1,12 @@
+import { pathsToModuleNameMapper } from "ts-jest";
+import { readFile } from "fs/promises";
+
+const {compilerOptions} = JSON.parse(
+  await readFile(
+    new URL('./tsconfig.json', import.meta.url)
+  )
+);
+
 /*
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/configuration
@@ -83,7 +92,7 @@ const config = {
   // ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],

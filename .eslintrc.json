@@ -31,8 +31,10 @@
     "functional",
     "eslint-plugin-tsdoc",
     "jest",
-    "jest-formatting"
+    "jest-formatting",
+    "import"
   ],
+  "ignorePatterns": [ "coverage/**/*"],
   "rules": {
     "jsdoc/require-param-type": 0,
     "jsdoc/require-returns-type": 0,
@@ -80,6 +82,9 @@
     ]
   },
   "settings": {
+    "import/resolver": {
+      "typescript": {}
+    },
     "jsdoc": {
       "mode": "typescript"
     },
