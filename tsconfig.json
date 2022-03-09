@@ -23,6 +23,16 @@
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "useUnknownInCatchVariables": true
-  }
+    "useUnknownInCatchVariables": true,
+    "paths": {
+      "src/*": [
+        "src/*"
+      ]
+    },
+    "baseUrl": "."
+  },
+  "exclude": [
+    "./coverage",
+    "jest.config.mjs"
+  ]
 }
