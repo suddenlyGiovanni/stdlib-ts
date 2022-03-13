@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-return-void,eslint-comments/disable-enable-pair */
 declare const URI: unique symbol
 
-export interface Typeclass<F extends HKT> {
+export interface TypeClass<F extends HKT> {
   readonly [URI]?: F
 }
 
