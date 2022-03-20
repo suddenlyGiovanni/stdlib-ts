@@ -11,7 +11,7 @@ specifiers:
   eslint-plugin-eslint-comments: 3.2.0
   eslint-plugin-functional: 4.2.0
   eslint-plugin-import: 2.25.4
-  eslint-plugin-jest: 26.1.1
+  eslint-plugin-jest: 26.1.2
   eslint-plugin-jest-formatting: 3.1.0
   eslint-plugin-jsdoc: 38.0.3
   eslint-plugin-tsdoc: 0.2.14
@@ -38,7 +38,7 @@ devDependencies:
   eslint-plugin-eslint-comments: 3.2.0_eslint@8.11.0
   eslint-plugin-functional: 4.2.0_886cf21f96ef64dd0568e69590a81d66
   eslint-plugin-import: 2.25.4_eslint@8.11.0
-  eslint-plugin-jest: 26.1.1_001ad503201c4e9538a066f91264180f
+  eslint-plugin-jest: 26.1.2_001ad503201c4e9538a066f91264180f
   eslint-plugin-jest-formatting: 3.1.0_eslint@8.11.0
   eslint-plugin-jsdoc: 38.0.3_eslint@8.11.0
   eslint-plugin-tsdoc: 0.2.14
@@ -1769,8 +1769,8 @@ packages:
       eslint: 8.11.0
     dev: true
 
-  /eslint-plugin-jest/26.1.1_001ad503201c4e9538a066f91264180f:
-    resolution: {integrity: sha512-HRKOuPi5ADhza4ZBK5ufyNXy28bXXkib87w+pQqdvBhSTsamndh6sIAKPAUl8y0/n9jSWBdTPslrwtKWqkp8dA==}
+  /eslint-plugin-jest/26.1.2_001ad503201c4e9538a066f91264180f:
+    resolution: {integrity: sha512-1bXCoRODPkGN06n9KAMls4Jm0eyS+0Q/LWcIxhqWR2ycV0Z7lnx2c10idk4dtFIJY5xStgiIr5snC6/rxcXpbw==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^5.0.0
@@ -1783,7 +1783,7 @@ packages:
         optional: true
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.14.0_ace6f9e7722b813e21eaf2dc993bc413
-      '@typescript-eslint/utils': 5.12.0_eslint@8.11.0+typescript@4.6.2
+      '@typescript-eslint/utils': 5.14.0_eslint@8.11.0+typescript@4.6.2
       eslint: 8.11.0
       jest: 27.5.1
     transitivePeerDependencies:
