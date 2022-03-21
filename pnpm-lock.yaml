@@ -13,7 +13,7 @@ specifiers:
   eslint-plugin-import: 2.25.4
   eslint-plugin-jest: 26.1.2
   eslint-plugin-jest-formatting: 3.1.0
-  eslint-plugin-jsdoc: 38.0.3
+  eslint-plugin-jsdoc: 38.0.6
   eslint-plugin-tsdoc: 0.2.14
   jest: 27.5.1
   prettier: 2.5.1
@@ -40,7 +40,7 @@ devDependencies:
   eslint-plugin-import: 2.25.4_eslint@8.11.0
   eslint-plugin-jest: 26.1.2_37483eea03cb2a5bbfbe402e58f1b05b
   eslint-plugin-jest-formatting: 3.1.0_eslint@8.11.0
-  eslint-plugin-jsdoc: 38.0.3_eslint@8.11.0
+  eslint-plugin-jsdoc: 38.0.6_eslint@8.11.0
   eslint-plugin-tsdoc: 0.2.14
   jest: 27.5.1
   prettier: 2.5.1
@@ -86,7 +86,7 @@ packages:
       '@babel/traverse': 7.17.3
       '@babel/types': 7.17.0
       convert-source-map: 1.8.0
-      debug: 4.3.3
+      debug: 4.3.4
       gensync: 1.0.0-beta.2
       json5: 2.2.0
       semver: 6.3.0
@@ -364,7 +364,7 @@ packages:
       '@babel/helper-split-export-declaration': 7.16.7
       '@babel/parser': 7.17.3
       '@babel/types': 7.17.0
-      debug: 4.3.3
+      debug: 4.3.4
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -382,11 +382,11 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@es-joy/jsdoccomment/0.21.2:
-    resolution: {integrity: sha512-k8NwNnnYgUR/hyC/JdAbKvaIzTgnT5XJeCeVFo5tpT/4Fu5WiXmhdi6M/c4diqXSDf3ZENyrCtgzCUhIbfT8Zg==}
+  /@es-joy/jsdoccomment/0.22.1:
+    resolution: {integrity: sha512-/WMkqLYfwCf0waCAMC8Eddt3iAOdghkDF5vmyKEu8pfO66KRFY1L15yks8mfgURiwOAOJpAQ3blvB3Znj6ZwBw==}
     engines: {node: ^12 || ^14 || ^16 || ^17}
     dependencies:
-      comment-parser: 1.3.0
+      comment-parser: 1.3.1
       esquery: 1.4.0
       jsdoc-type-pratt-parser: 2.2.5
     dev: true
@@ -396,7 +396,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.3
+      debug: 4.3.4
       espree: 9.3.1
       globals: 13.12.1
       ignore: 5.2.0
@@ -413,7 +413,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.3
+      debug: 4.3.4
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -911,7 +911,7 @@ packages:
         optional: true
     dependencies:
       '@typescript-eslint/utils': 5.16.0_eslint@8.11.0+typescript@4.6.2
-      debug: 4.3.3
+      debug: 4.3.4
       eslint: 8.11.0
       tsutils: 3.21.0_typescript@4.6.2
       typescript: 4.6.2
@@ -945,7 +945,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.12.0
       '@typescript-eslint/visitor-keys': 5.12.0
-      debug: 4.3.3
+      debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.3.5
@@ -966,7 +966,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.14.0
       '@typescript-eslint/visitor-keys': 5.14.0
-      debug: 4.3.3
+      debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.3.5
@@ -987,7 +987,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.16.0
       '@typescript-eslint/visitor-keys': 5.16.0
-      debug: 4.3.3
+      debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.3.5
@@ -1115,7 +1115,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.3
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -1467,6 +1467,11 @@ packages:
     engines: {node: '>= 12.0.0'}
     dev: true
 
+  /comment-parser/1.3.1:
+    resolution: {integrity: sha512-B52sN2VNghyq5ofvUsqZjmk6YkihBX5vMSChmSK9v4ShjKf3Vk5Xcmgpw4o+iIgtrnM/u5FiMpz9VKb8lpBveA==}
+    engines: {node: '>= 12.0.0'}
+    dev: true
+
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
     dev: true
@@ -1524,6 +1529,18 @@ packages:
 
   /debug/4.3.3:
     resolution: {integrity: sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+    dev: true
+
+  /debug/4.3.4:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -1851,15 +1868,15 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-jsdoc/38.0.3_eslint@8.11.0:
-    resolution: {integrity: sha512-CGA2XrDPhDhSnVsSU1fGh/Hf2B/ggF/zLQ8AcaDPORoynkLEXJGVXgkH8yLxtjQajS7ANYJXPKwbnXDpIbDwoQ==}
+  /eslint-plugin-jsdoc/38.0.6_eslint@8.11.0:
+    resolution: {integrity: sha512-Wvh5ERLUL8zt2yLZ8LLgi8RuF2UkjDvD+ri1/i7yMpbfreK2S29B9b5JC7iBIoFR7KDaEWCLnUPHTqgwcXX1Sg==}
     engines: {node: ^12 || ^14 || ^16 || ^17}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
     dependencies:
-      '@es-joy/jsdoccomment': 0.21.2
-      comment-parser: 1.3.0
-      debug: 4.3.3
+      '@es-joy/jsdoccomment': 0.22.1
+      comment-parser: 1.3.1
+      debug: 4.3.4
       escape-string-regexp: 4.0.0
       eslint: 8.11.0
       esquery: 1.4.0
@@ -2295,7 +2312,7 @@ packages:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.3.3
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -2305,7 +2322,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.3
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -2568,7 +2585,7 @@ packages:
     resolution: {integrity: sha512-n3s8EwkdFIJCG3BPKBYvskgXGoy88ARzvegkitk60NxRdwltLOTaH7CUiMRXvwYorl0Q712iEjcWB+fK/MrWVw==}
     engines: {node: '>=10'}
     dependencies:
-      debug: 4.3.3
+      debug: 4.3.4
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -3306,7 +3323,7 @@ packages:
   /micromark/2.11.4:
     resolution: {integrity: sha512-+WoovN/ppKolQOFIAajxi7Lu9kInbPxFuTBVEavFcL8eAfVstoc5MocPmqBeAdBOJV00uaVjegzH4+MA0DN/uA==}
     dependencies:
-      debug: 4.3.3
+      debug: 4.3.4
       parse-entities: 2.0.0
     transitivePeerDependencies:
       - supports-color
