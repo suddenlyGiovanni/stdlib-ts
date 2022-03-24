@@ -17,7 +17,7 @@ specifiers:
   eslint-plugin-tsdoc: 0.2.14
   jest: 27.5.1
   prettier: 2.6.0
-  prettier-plugin-jsdoc: 0.3.31
+  prettier-plugin-jsdoc: 0.3.32
   ts-jest: 27.1.3
   ts-toolbelt: 9.6.0
   tsd: 0.19.1
@@ -44,7 +44,7 @@ devDependencies:
   eslint-plugin-tsdoc: 0.2.14
   jest: 27.5.1
   prettier: 2.6.0
-  prettier-plugin-jsdoc: 0.3.31_prettier@2.6.0
+  prettier-plugin-jsdoc: 0.3.32_prettier@2.6.0
   ts-jest: 27.1.3_jest@27.5.1+typescript@4.6.2
   tsd: 0.19.1
   tsutils: 3.21.0_typescript@4.6.2
@@ -1400,11 +1400,6 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
-    dev: true
-
-  /comment-parser/1.3.0:
-    resolution: {integrity: sha512-hRpmWIKgzd81vn0ydoWoyPoALEOnF4wt8yKD35Ib1D6XC2siLiYaiqfGkYrunuKdsXGwpBpHU3+9r+RVw2NZfA==}
-    engines: {node: '>= 12.0.0'}
     dev: true
 
   /comment-parser/1.3.1:
@@ -3583,14 +3578,14 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-plugin-jsdoc/0.3.31_prettier@2.6.0:
-    resolution: {integrity: sha512-/YDoJtEwPLRU4fKKjsWqqWHGII4AEzmNsnLglIDxj3iduWeVinT+fjKyez/eHq4oaawqXVt8JxNpbm5WVakN1Q==}
+  /prettier-plugin-jsdoc/0.3.32_prettier@2.6.0:
+    resolution: {integrity: sha512-qhGvkDeHZAPlg6IfePdTfn0L/qb2kqqKmWkV3kKqqVNTl7PgKI35T+k/X4Oe7KGKTaM6H94snvxLUQOCCqNHFg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       prettier: '>=2.1.2'
     dependencies:
       binary-search-bounds: 2.0.5
-      comment-parser: 1.3.0
+      comment-parser: 1.3.1
       linguist-languages: 7.15.0
       mdast-util-from-markdown: 0.8.5
       prettier: 2.6.0
