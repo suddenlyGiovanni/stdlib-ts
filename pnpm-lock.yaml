@@ -20,7 +20,7 @@ specifiers:
   prettier-plugin-jsdoc: 0.3.32
   ts-jest: 27.1.4
   ts-toolbelt: 9.6.0
-  tsd: 0.19.1
+  tsd: 0.20.0
   tsutils: 3.21.0
   typescript: 4.6.3
 
@@ -46,7 +46,7 @@ devDependencies:
   prettier: 2.6.0
   prettier-plugin-jsdoc: 0.3.32_prettier@2.6.0
   ts-jest: 27.1.4_jest@27.5.1+typescript@4.6.3
-  tsd: 0.19.1
+  tsd: 0.20.0
   tsutils: 3.21.0_typescript@4.6.3
   typescript: 4.6.3
 
@@ -701,8 +701,8 @@ packages:
     resolution: {integrity: sha512-B/R4m4fy4ZKvAjwpDW3BdfNHYhRltMPpUdZTI0RpKSTU6HzA7Ub3XskVmbFG45JaOcjuTqXzO7o4rDG0LfUYzQ==}
     dev: true
 
-  /@tsd/typescript/4.5.5:
-    resolution: {integrity: sha512-TxQ9QiUT94ZjKu++ta/iwTMVHsix4ApohnaHPTSd58WQuTjPIELP0tUYcW7lT6psz7yZiU4eRw+X4v/XV830Sw==}
+  /@tsd/typescript/4.6.3:
+    resolution: {integrity: sha512-WjipklCf6qWQL4Hkw+FSwOXMA5JqKv04ro/c1aviYSzLJFdcFMrR/FHjOGBIEAIq7pb8Bw74wd+G45dWfC/Jnw==}
     hasBin: true
     dev: true
 
@@ -4073,12 +4073,12 @@ packages:
       strip-bom: 3.0.0
     dev: true
 
-  /tsd/0.19.1:
-    resolution: {integrity: sha512-pSwchclr+ADdxlahRUQXUrdAIOjXx1T1PQV+fLfVLuo/S4z+T00YU84fH8iPlZxyA2pWgJjo42BG1p9SDb4NOw==}
+  /tsd/0.20.0:
+    resolution: {integrity: sha512-iba/JlyT3qtnA9t8VrX2Fipu3L31U48oRIf1PNs+lIwQ7n63GTkt9eQlB5bLtfb7nYfy9t8oZzs+K4QEoEIS8Q==}
     engines: {node: '>=12'}
     hasBin: true
     dependencies:
-      '@tsd/typescript': 4.5.5
+      '@tsd/typescript': 4.6.3
       eslint-formatter-pretty: 4.1.0
       globby: 11.1.0
       meow: 9.0.0
