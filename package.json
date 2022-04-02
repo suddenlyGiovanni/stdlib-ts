@@ -20,7 +20,7 @@
     "eslint-plugin-jsdoc": "38.1.6",
     "eslint-plugin-tsdoc": "0.2.14",
     "jest": "27.5.1",
-    "prettier": "2.6.0",
+    "prettier": "2.6.2",
     "prettier-plugin-jsdoc": "0.3.32",
     "ts-jest": "27.1.4",
     "tsd": "0.20.0",
