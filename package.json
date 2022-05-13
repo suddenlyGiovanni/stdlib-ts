@@ -38,8 +38,8 @@
     "ts-toolbelt": "9.6.0"
   },
   "engines": {
-    "node": ">=17.6.0",
-    "pnpm": ">=6.22.2"
+    "node": ">=18.1.0",
+    "pnpm": ">=7.x.x"
   },
   "tsd": {
     "directory": "src/__tests__/types"
