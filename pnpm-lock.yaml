@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@jest/globals': 28.1.0
-  '@tsconfig/node16-strictest-esm': 1.0.1
+  '@tsconfig/node16-strictest-esm': 1.0.3
   '@typescript-eslint/eslint-plugin': 5.26.0
   '@typescript-eslint/parser': 5.26.0
   eslint: 8.16.0
@@ -29,7 +29,7 @@ dependencies:
 
 devDependencies:
   '@jest/globals': 28.1.0
-  '@tsconfig/node16-strictest-esm': 1.0.1
+  '@tsconfig/node16-strictest-esm': 1.0.3
   '@typescript-eslint/eslint-plugin': 5.26.0_a22spa5g5ouiec5lndtfam55g4
   '@typescript-eslint/parser': 5.26.0_vjep2yp2sits3sqnodefgcbnfi
   eslint: 8.16.0
@@ -720,8 +720,8 @@ packages:
       '@sinonjs/commons': 1.8.3
     dev: true
 
-  /@tsconfig/node16-strictest-esm/1.0.1:
-    resolution: {integrity: sha512-+ZUodm4gDaDFOoawqTGbVUbIR6bBinMyOhUSle84nVv4HtQQwRM19H+8w2lhAgcqt66UBvoI2+5Hqh218fjKWQ==}
+  /@tsconfig/node16-strictest-esm/1.0.3:
+    resolution: {integrity: sha512-0/QTPDkKmE2dy0dMRstPCv4VJ+gUGgvMKzaWd5P3hgdlmPqYqe1pJxDGUlNYbSgUBlncIvvX+mIeZarokysNgg==}
     dev: true
 
   /@tsd/typescript/4.6.3:
