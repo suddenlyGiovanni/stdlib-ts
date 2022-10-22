@@ -1,14 +1,21 @@
+/* eslint-disable jest/valid-title,eslint-comments/disable-enable-pair */
 import { describe, expect, it, jest, test } from '@jest/globals'
 
-import * as F from '../fuction'
 /**
  * @privateRemarks
  *   `_` import is a Scala convention where we want to import all the functions
  *   and methods form a given module to the current scope.
  */
-import _ from '../option/fluent'
-
+import * as F from '../fuction'
 import type { Option } from '../option/fluent'
+import _ from '../option/fluent'
+import * as P from '../option/pipable'
+import { pipe } from '../pipe'
+
+enum OptionAPI {
+  fluent = 'fluent API',
+  pipable = 'pipable API',
+}
 
 class Utils {
   static readonly number = 10 as const
@@ -37,7 +44,7 @@ class Utils {
 
 describe('Option', () => {
   describe('constructors', () => {
-    it('should provide a way to instantiate a `None` instance', () => {
+    test('should provide a way to instantiate a `None` instance', () => {
       expect(_.none).toMatchObject({ _tag: 'None' })
       expect(_.none.isNone()).toBe(true)
       expect(_.none.isSome()).toBe(false)
@@ -51,7 +58,7 @@ describe('Option', () => {
       expect(_.empty.isSome()).toBe(false)
     })
 
-    it('should provide a way to instantiate a `Some` instance', () => {
+    test('should provide a way to instantiate a `Some` instance', () => {
       expect(_.some(Utils.string)).toMatchObject({ _tag: 'Some' })
       expect(_.some(Utils.number)).toMatchObject({
         _tag: 'Some',
@@ -95,20 +102,34 @@ describe('Option', () => {
     })
   })
 
-  test('isNone', () => {
-    expect(_.none.isNone()).toBe(true)
-    expect(_.isNone(_.none)).toBe(true)
+  describe('isNone', () => {
+    test(OptionAPI.fluent, () => {
+      expect(_.none.isNone()).toBe(true)
+      expect(_.some(1).isNone()).toBe(false)
+    })
 
-    expect(_.some(1).isNone()).toBe(false)
-    expect(_.isNone(_.some(1))).toBe(false)
+    test(OptionAPI.pipable, () => {
+      expect(P.isNone(_.none)).toBe(true)
+      expect(_.isNone(_.none)).toBe(true)
+
+      expect(P.isNone(_.some(1))).toBe(false)
+      expect(_.isNone(_.some(1))).toBe(false)
+    })
   })
 
-  test('isSome', () => {
-    expect(_.some(1).isSome()).toBe(true)
-    expect(_.isSome(_.some(1))).toBe(true)
+  describe('isSome', () => {
+    test(OptionAPI.fluent, () => {
+      expect(_.some(1).isSome()).toBe(true)
+      expect(_.none.isSome()).toBe(false)
+    })
 
-    expect(_.none.isSome()).toBe(false)
-    expect(_.isSome(_.none)).toBe(false)
+    test(OptionAPI.pipable, () => {
+      expect(P.isSome(_.some(1))).toBe(true)
+      expect(_.isSome(_.some(1))).toBe(true)
+
+      expect(P.isSome(_.none)).toBe(false)
+      expect(_.isSome(_.none)).toBe(false)
+    })
   })
 
   test('mapNullable', () => {
@@ -167,19 +188,30 @@ describe('Option', () => {
     expect(_.some(fn).value).toStrictEqual(fn)
   })
 
-  test('getOrElse', () => {
-    expect(_.some(1).getOrElse(() => 0)).toBe(1)
-    expect(_.none.getOrElse(() => 0)).toBe(0)
-  })
+  describe('getOrElse / getOrElseW / getOrElseInv', () => {
+    test(OptionAPI.fluent, () => {
+      // getOrElse
+      expect(_.some(1).getOrElse(() => 0)).toBe(1)
+      expect(_.none.getOrElse(() => 0)).toBe(0)
 
-  test('getOrElseW', () => {
-    expect(_.some(1).getOrElseW(() => 'zero')).toBe(1)
-    expect(_.empty.getOrElseW(() => 'zero')).toBe('zero')
-  })
+      // getOrElseW
+      expect(_.some(1).getOrElseW(() => 'zero')).toBe(1)
+      expect(_.empty.getOrElseW(() => 'zero')).toBe('zero')
 
-  test('getOrElseInv', () => {
-    expect(_.some(F.literal('foo')).getOrElseInv(() => 'bar')).toBe('foo')
-    expect(_.empty.getOrElseInv(() => F.literal('bar'))).toBe('bar')
+      // getOrElseInv
+      expect(_.some(F.literal('foo')).getOrElseInv(() => 'bar')).toBe('foo')
+      expect(_.empty.getOrElseInv(() => F.literal('bar'))).toBe('bar')
+    })
+
+    test(OptionAPI.pipable, () => {
+      // getOrElseW
+      expect(P.getOrElseW(() => 'zero')(_.some(1))).toBe(1)
+      expect(_.getOrElseW(() => 'zero')(_.empty)).toBe('zero')
+
+      // getOrElse
+      expect(P.getOrElse(() => 0)(_.some(1))).toBe(1)
+      expect(_.getOrElse(() => 0)(_.none)).toBe(0)
+    })
   })
 
   test('orNull', () => {
@@ -188,11 +220,25 @@ describe('Option', () => {
     expect(_.some(1).orNull()).not.toBeNull()
   })
 
-  test('exists', () => {
+  describe('exists', () => {
     const predicate: F.Predicate<number> = (a) => a > 0
-    expect(_.some(1).exists(predicate)).toBe(true)
-    expect(_.some(1).exists((n) => n > 1)).toBe(false)
-    expect(_.none.exists(predicate)).toBe(false)
+
+    test(OptionAPI.fluent, () => {
+      expect(_.some(1).exists(predicate)).toBe(true)
+      expect(_.some(1).exists((n) => n > 1)).toBe(false)
+      expect(_.none.exists(predicate)).toBe(false)
+    })
+
+    test(OptionAPI.pipable, () => {
+      expect(pipe(P.exists(predicate))(_.some(1))).toBe(true)
+      expect(_.exists(predicate)(_.some(1))).toBe(true)
+
+      expect(pipe(P.exists((n: number) => n > 1))(_.some(1))).toBe(false)
+      expect(_.exists((n: number) => n > 1)(_.some(1))).toBe(false)
+
+      expect(pipe(P.exists(predicate))(_.none)).toBe(false)
+      expect(_.exists(predicate)(_.none)).toBe(false)
+    })
   })
 
   test('contains', () => {
@@ -201,41 +247,78 @@ describe('Option', () => {
     expect(_.none.contains('anything')).toBe(false)
   })
 
-  test('fold/match', () => {
-    const onNone = (): string => 'a None'
-    const onSome = (s: string): string => `a Some of length ${s.length}`
+  describe('fold / foldW / match', () => {
+    const onNone: F.Lazy<string> = () => 'a None'
+    const onSomeW: (a: string) => number = (s) => s.length
+    const onSome: (a: string) => string = (s) => `a Some of length ${s.length}`
 
-    expect(
-      _.none.fold(
-        () => 'a None',
-        // @ts-expect-error asserting unreachable branch
-        F.absurd
-      )
-    ).toBe(onNone())
+    test(OptionAPI.fluent, () => {
+      expect(
+        _.none.fold(
+          () => 'a None',
+          // @ts-expect-error asserting unreachable branch
+          F.absurd
+        )
+      ).toBe(onNone())
 
-    expect(_.none.match(onNone, onSome)).toBe(onNone())
+      expect(_.none.matchW(onNone, onSomeW)).toBe(onNone())
 
-    expect(
-      _.some('abc').fold(
-        // @ts-expect-error asserting unreachable branch
-        F.absurd,
-        onSome
-      )
-    ).toBe('a Some of length 3')
+      expect(
+        _.some('abc').fold(
+          // @ts-expect-error asserting unreachable branch
+          F.absurd,
+          onSome
+        )
+      ).toBe('a Some of length 3')
+      expect(_.some('abc').foldW(onNone, onSomeW)).toBe(3)
 
-    expect(_.some('abc').match(onNone, onSome)).toBe('a Some of length 3')
+      expect(_.some('abc').matchW(onNone, onSome)).toBe('a Some of length 3')
+    })
+
+    test(OptionAPI.pipable, () => {
+      expect(
+        P.fold(
+          () => 'a None',
+          // @ts-expect-error asserting unreachable branch
+          F.absurd
+        )(_.none)
+      ).toBe(onNone())
+
+      expect(P.foldW(onNone, onSomeW)(_.none)).toBe(onNone())
+
+      expect(
+        P.fold(
+          // @ts-expect-error asserting unreachable branch
+          F.absurd,
+          onSome
+        )(_.some('abc'))
+      ).toBe('a Some of length 3')
+
+      expect(P.foldW(onNone, onSomeW)(_.some('abc'))).toBe(3)
+    })
   })
 
-  test('map', () => {
+  describe('map', () => {
     const someA: Option<1> = _.some(1 as const)
     const someB: Option<'1'> = _.some(F.literal('1'))
-
-    expect(_.some(2).map(Utils.double)).toStrictEqual(_.some(4))
-    expect(someA.map(Utils.fromNumberToString)).toStrictEqual(someB)
-
     const noneA = _.empty
-    expect(_.none.map(Utils.double)).toStrictEqual(_.none)
-    expect(noneA.map(Utils.fromNumberToString)).toStrictEqual(_.none)
+    const someOf2 = _.some(2)
+
+    test(OptionAPI.pipable, () => {
+      expect(P.map(Utils.double)(someOf2)).toStrictEqual(_.some(4))
+      expect(_.map(Utils.fromNumberToString)(someA)).toStrictEqual(someB)
+
+      expect(P.map(Utils.double)(_.none)).toStrictEqual(_.none)
+      expect(_.map(Utils.fromNumberToString)(noneA)).toStrictEqual(_.none)
+    })
+
+    test(OptionAPI.fluent, () => {
+      expect(someOf2.map(Utils.double)).toStrictEqual(_.some(4))
+      expect(someA.map(Utils.fromNumberToString)).toStrictEqual(someB)
+
+      expect(_.none.map(Utils.double)).toStrictEqual(_.none)
+      expect(noneA.map(Utils.fromNumberToString)).toStrictEqual(_.none)
+    })
   })
 
   test('toUndefined', () => {
@@ -282,33 +365,64 @@ describe('Option', () => {
     expect(_.none.ap(_.none)).toStrictEqual(_.none)
   })
 
-  test('chain / flatMap', () => {
-    const f = (n: number) => _.some(n * 2)
-    const g = () => _.none
-    expect(_.some(1).chain(f)).toStrictEqual(_.some(2))
-    expect(_.some(1).flatMap(f)).toStrictEqual(_.some(2))
-    expect(_.none.chain(f)).toStrictEqual(_.none)
-    expect(_.none.flatMap(f)).toStrictEqual(_.none)
-    expect(_.some(1).chain(g)).toStrictEqual(_.none)
-    expect(_.some(1).flatMap(g)).toStrictEqual(_.none)
-    expect(_.none.chain(g)).toStrictEqual(_.none)
-    expect(_.none.flatMap(g)).toStrictEqual(_.none)
+  describe('flatMap / chain', () => {
+    const double: (a: number) => Option<number> = (n) => _.some(n * 2)
+    const square: (a: number) => Option<number> = (n) => _.some(Math.pow(n, 2))
+
+    const g: (a: number) => Option<number> = () => _.none
+
+    test(OptionAPI.fluent, () => {
+      const program = <A extends number>(ma: Option<A>) =>
+        ma
+          .flatMap(double) //
+          .chain(square) // we are also testing the alias
+
+      expect(program(_.some(1))).toStrictEqual(_.some(4))
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(1)).flatMap(g)).toStrictEqual(_.none)
+      expect(program(_.none).flatMap(g)).toStrictEqual(_.none)
+    })
+
+    test(OptionAPI.pipable, () => {
+      const program = pipe(
+        P.flatMap(double),
+        _.flatMap((x: number) => _.some(x)), // identity
+        _.chain(square)
+      )
+
+      expect(program(_.some(1))).toStrictEqual(_.some(4))
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(pipe(P.flatMap(g), program)(_.some(1))).toStrictEqual(_.none)
+      expect(pipe(_.chain(g), program)(_.none)).toStrictEqual(_.none)
+    })
   })
 
-  test('flatten', () => {
-    expect(_.some(_.some(1)).flatten()).toStrictEqual(_.some(1))
-    expect(_.some(_.none).flatten()).toStrictEqual(_.none)
-    expect(_.none.flatten()).toStrictEqual(_.none)
-    /**
-     * The 'this' context of type `Some<number>` is not assignable to method's
-     * 'this' of type `Option<Option<unknown>>`. Type 'Some<number>' is not
-     * assignable to type `Some<Option<unknown>>`. Type 'number' is not
-     * assignable to type `Option<unknown>`.
-     */
-    expect(
-      // @ts-expect-error: TS2684:
-      _.some(1).flatten()
-    ).toBe(1)
+  describe('flatten', () => {
+    test(OptionAPI.fluent, () => {
+      expect(_.some(_.some(1)).flatten()).toStrictEqual(_.some(1))
+      expect(_.some(_.none).flatten()).toStrictEqual(_.none)
+      expect(_.none.flatten()).toStrictEqual(_.none)
+      /**
+       * The 'this' context of type `Some<number>` is not assignable to method's
+       * 'this' of type `Option<Option<unknown>>`. Type 'Some<number>' is not
+       * assignable to type `Some<Option<unknown>>`. Type 'number' is not
+       * assignable to type `Option<unknown>`.
+       */
+      expect(
+        // @ts-expect-error: TS2684:
+        _.some(1).flatten()
+      ).toBe(1)
+    })
+
+    it(OptionAPI.pipable, () => {
+      const maybeMaybeA = _.some(_.some(1))
+
+      expect(P.compact(maybeMaybeA)).toStrictEqual(_.some(1))
+      expect(_.flatten(maybeMaybeA)).toStrictEqual(_.some(1))
+
+      expect(P.compact(_.some(_.none))).toStrictEqual(_.none)
+      expect(_.flatten(_.none)).toStrictEqual(_.none)
+    })
   })
 
   test('zip', () => {
@@ -344,18 +458,66 @@ describe('Option', () => {
     expect(_.none.unzip3()).toStrictEqual(F.tuple(_.none, _.none, _.none))
   })
 
-  test('filter', () => {
-    const predicate: F.Predicate<number> = (a) => a === 2
-    expect(_.none.filter(predicate)).toStrictEqual(_.none)
-    expect(_.some(1).filter(predicate)).toStrictEqual(_.none)
-    expect(_.some(2).filter(predicate)).toStrictEqual(_.some(2))
+  describe('filter', () => {
+    type Int = number & { readonly _tag: 'Int' }
+    const isInteger: F.Refinement<number, Int> = (a): a is Int =>
+      Number.isInteger(a)
+    const isPositive: F.Predicate<Int> = (a) => a > 0
+    const isEven: F.Predicate<Int> = (a) => a % 2 === 0
+    const isEqualTo2: F.Predicate<Int> = (a) => a === 2
+
+    test(OptionAPI.fluent, () => {
+      const program = (fa: Option<number>): Option<Int> =>
+        fa
+          .filter(isInteger)
+          .filter(isPositive)
+          .filter(isEven)
+          .filter(isEqualTo2)
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(1))).toStrictEqual(_.none)
+      expect(program(_.some(2))).toStrictEqual(_.some(2))
+    })
+
+    test(OptionAPI.pipable, () => {
+      const program = pipe(
+        P.filter(isInteger),
+        _.filter(isPositive),
+        P.filter(isEven),
+        _.filter(isEqualTo2)
+      )
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(1))).toStrictEqual(_.none)
+      expect(program(_.some(2))).toStrictEqual(_.some(2))
+    })
   })
 
-  test('filterNot', () => {
-    const predicate: F.Predicate<number> = (a) => a === 2
-    expect(_.none.filterNot(predicate)).toStrictEqual(_.none)
-    expect(_.some(1).filterNot(predicate)).toStrictEqual(_.some(1))
-    expect(_.some(2).filterNot(predicate)).toStrictEqual(_.none)
+  describe('filterNot', function () {
+    const isPositive: F.Predicate<number> = (a) => a > 0
+    const isEven: F.Predicate<number> = (a) => a % 2 === 0
+    const isEqualTo2: F.Predicate<number> = (a) => a === 2
+
+    test(OptionAPI.fluent, () => {
+      const program = <A extends number>(fa: Option<A>): Option<A> =>
+        fa
+          .filterNot(isEven) //
+          .filterNot(isPositive) //
+          .filterNot(isEqualTo2) //
+
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(-0.1))).toStrictEqual(_.some(-0.1))
+      expect(program(_.some(2))).toStrictEqual(_.none)
+    })
+
+    test(OptionAPI.pipable, () => {
+      const program = pipe(
+        P.filterNot(isEven),
+        _.filterNot(isPositive), // here we are testing that also the static method behaves accordingly
+        P.filterNot(isEqualTo2)
+      )
+      expect(program(_.none)).toStrictEqual(_.none)
+      expect(program(_.some(-1))).toStrictEqual(_.some(-1))
+      expect(program(_.some(2))).toStrictEqual(_.none)
+    })
   })
 
   test('tap', () => {
@@ -425,27 +587,54 @@ describe('Option', () => {
     )
   })
 
-  test('forEach', () => {
-    const actual: number[] = []
+  describe('forEach', () => {
+    test(OptionAPI.fluent, () => {
+      const actual: number[] = []
 
-    // act 1
-    _.none.forEach((x: number) => actual.push(x))
+      // act 1
+      _.none.forEach((x: number) => actual.push(x))
 
-    // assert 1
-    expect(actual).toStrictEqual([])
+      // assert 1
+      expect(actual).toStrictEqual([])
 
-    // act 2
-    _.some(Utils.number).forEach((n) => actual.push(n))
+      // act 2
+      _.some(Utils.number).forEach((n) => actual.push(n))
 
-    // assert 2
-    expect(actual).toContainEqual(Utils.number)
+      // assert 2
+      expect(actual).toContainEqual(Utils.number)
+    })
+
+    test(OptionAPI.pipable, () => {
+      const actual: number[] = []
+
+      // act 1
+      P.forEach((x: number) => actual.push(x))(_.none)
+
+      // assert 1
+      expect(actual).toStrictEqual([])
+
+      // act 2
+      _.forEach((n: number) => actual.push(n))(_.some(Utils.number))
+
+      // assert 2
+      expect(actual).toContainEqual(Utils.number)
+    })
   })
 
-  test('forall', () => {
+  describe('forall', () => {
     const isEven: F.Predicate<number> = (x: number) => x % 2 === 0
-    expect(_.none.forall(isEven)).toBe(true)
-    expect(_.some(Utils.number).forall(isEven)).toBe(true)
-    expect(_.some(9).forall(isEven)).toBe(false)
+
+    test(OptionAPI.fluent, () => {
+      expect(_.none.forall(isEven)).toBe(true)
+      expect(_.some(Utils.number).forall(isEven)).toBe(true)
+      expect(_.some(9).forall(isEven)).toBe(false)
+    })
+
+    test(OptionAPI.pipable, () => {
+      expect(P.forall(isEven)(_.none)).toBe(true)
+      expect(P.forall(isEven)(_.some(Utils.number))).toBe(true)
+      expect(_.forall(isEven)(_.some(9))).toBe(false)
+    })
   })
 
   test('unless', () => {
@@ -492,5 +681,66 @@ describe('Option', () => {
 
     expect(_.equals(maybe1, _.some(2))).toBe(false)
     expect(maybe1.equals(_.some(2))).toBe(false)
+  })
+
+  describe('iterable', () => {
+    const iteratorInterface: Iterator<unknown> = {
+      next: (): IteratorResult<unknown> => ({ value: undefined, done: true }),
+    }
+
+    it('should return an iterator', () => {
+      expect(_.some(42)[Symbol.iterator]()).toHaveProperty(
+        Object.keys(iteratorInterface)
+      )
+
+      expect(_.none[Symbol.iterator]()).toHaveProperty(
+        Object.keys(iteratorInterface)
+      )
+    })
+
+    it('should iterate Some', () => {
+      const value = 42 as const
+      const lazyIterable: F.Lazy<Iterator<number>> = () =>
+        _.some(value)[Symbol.iterator]()
+
+      expect(lazyIterable().next()).toHaveProperty(['value'])
+
+      const itResult: IteratorYieldResult<number> = { done: false, value } // FIXME: verify the correct value for the flag done within iteration
+      expect(lazyIterable().next()).toStrictEqual(itResult)
+      expect(lazyIterable().next()).toStrictEqual(itResult)
+    })
+
+    it('should iterate over None', () => {
+      const itResult: IteratorReturnResult<void> = {
+        done: true,
+        value: undefined,
+      }
+      const it = _.none[Symbol.iterator]()
+
+      expect(it.next()).toStrictEqual(itResult)
+    })
+
+    it('should be able to integrate methods supporting `iterable` protocol', () => {
+      // arrange
+
+      const n = 42
+      const maybeNumber = _.some(n)
+
+      // act
+      const result = new Set<number>(maybeNumber)
+
+      // assert
+      expect(result.has(n)).toBeTruthy()
+
+      // act again
+      result.clear()
+      for (const number of maybeNumber) {
+        result.add(number + 1)
+      }
+      expect(result).toContainEqual(n + 1)
+
+      // asset again
+      expect([...maybeNumber]).toStrictEqual([n])
+    })
   })
 })
